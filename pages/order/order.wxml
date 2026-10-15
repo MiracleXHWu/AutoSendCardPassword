@@ -1,0 +1,107 @@
+<!-- pages/order/order.wxml —— 支付结果与发货内容 -->
+
+<!-- 骨架屏 -->
+<view wx:if="{{loading}}" class="wrap">
+  <view class="status wait">
+    <view class="skel s-ring"></view>
+    <view class="skel s-line short center"></view>
+  </view>
+  <view class="card">
+    <view class="skel s-line"></view>
+    <view class="skel s-line short"></view>
+  </view>
+</view>
+
+<block wx:else>
+  <view class="wrap">
+    <!-- 状态卡：整个页面最重要的视觉焦点 -->
+    <view class="status {{refunded ? 'neutral' : (delivered ? 'ok' : 'wait')}}">
+      <view class="status-icon">
+        <view class="ring">{{refunded ? '↩' : (delivered ? '✓' : '⋯')}}</view>
+      </view>
+      <view class="status-title">{{statusTitle}}</view>
+      <view class="status-desc">{{statusDesc}}</view>
+    </view>
+
+    <!-- 发货内容 -->
+    <view class="card" wx:if="{{delivered && order.content}}">
+      <view class="sec-title">下载信息</view>
+
+      <view class="item" wx:for="{{order.content.items}}" wx:key="index">
+        <view class="item-head" wx:if="{{order.content.items.length > 1}}">第 {{index + 1}} 份</view>
+
+        <block wx:if="{{item.link}}">
+          <view class="label">下载链接</view>
+          <view class="value mono">{{item.link}}</view>
+          <view class="acts">
+            <view class="btn-ghost act" hover-class="pressed" data-text="{{item.link}}" bindtap="copy">
+              复制链接
+            </view>
+            <view class="btn-ghost act" hover-class="pressed" data-url="{{item.link}}" bindtap="openLink">
+              打开链接
+            </view>
+          </view>
+        </block>
+
+        <block wx:if="{{item.pwd}}">
+          <view class="label">提取码</view>
+          <view class="value value-pwd mono">{{item.pwd}}</view>
+          <view class="acts">
+            <view class="btn-ghost act" hover-class="pressed" data-text="{{item.pwd}}" bindtap="copy">
+              复制提取码
+            </view>
+          </view>
+        </block>
+
+        <block wx:if="{{!item.link && item.raw}}">
+          <view class="label">兑换码 / 卡密</view>
+          <view class="value mono">{{item.raw}}</view>
+          <view class="acts">
+            <view class="btn-ghost act" hover-class="pressed" data-text="{{item.raw}}" bindtap="copy">
+              复制
+            </view>
+          </view>
+        </block>
+      </view>
+
+      <view class="btn-primary copy-all" hover-class="pressed" bindtap="copyAll">一键复制全部</view>
+      <view class="muted note" wx:if="{{order.tips}}">{{order.tips}}</view>
+    </view>
+
+    <!-- 尚未发货 -->
+    <view class="card" wx:elif="{{!refunded}}">
+      <view class="sec-title">{{retrying ? '正在自动发货' : '尚未收到发货通知'}}</view>
+      <view class="t-sub">
+        {{retrying ? '系统正在向微信核对支付结果，通常数秒内完成，请稍候…' : '如果你已经完成付款，可以点击下方按钮手动刷新。'}}
+      </view>
+      <view class="btn-ghost refresh" hover-class="pressed" bindtap="fetch">手动刷新</view>
+    </view>
+
+    <!-- 订单信息 -->
+    <view class="card">
+      <view class="sec-title">订单信息</view>
+
+      <view class="row" wx:if="{{order}}">
+        <view class="row-k">商品</view>
+        <view class="row-v">{{order.goodsTitle || order.productId}}</view>
+      </view>
+      <view class="row" wx:if="{{priceText}}">
+        <view class="row-k">实付金额</view>
+        <view class="row-v price-inline">¥{{priceText}}</view>
+      </view>
+      <view class="row" wx:if="{{outTradeNo}}">
+        <view class="row-k">订单号</view>
+        <view class="row-v small mono">{{outTradeNo}}</view>
+      </view>
+      <view class="row" wx:if="{{timeText}}">
+        <view class="row-k">{{delivered ? '发货时间' : '下单时间'}}</view>
+        <view class="row-v small">{{timeText}}</view>
+      </view>
+
+      <view class="divider"></view>
+      <button class="contact" open-type="contact" session-from="order-detail">
+        订单有问题？联系客服 →
+      </button>
+    </view>
+  </view>
+</block>

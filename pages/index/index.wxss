@@ -1,0 +1,238 @@
+/* pages/index/index.wxss */
+
+/* 自定义 tabBar 占位 */
+.wrap {
+  padding-bottom: 240rpx;
+}
+
+/* ---------------- 顶部横幅 ---------------- */
+.banner {
+  position: relative;
+  padding: 44rpx 36rpx;
+  border-radius: 28rpx;
+  margin-bottom: 28rpx;
+  background: linear-gradient(135deg, #14c46f 0%, #059a57 100%);
+  box-shadow: 0 12rpx 32rpx rgba(5, 154, 87, 0.22);
+  overflow: hidden;
+}
+
+.banner::after {
+  content: '';
+  position: absolute;
+  top: -140rpx;
+  right: -100rpx;
+  width: 320rpx;
+  height: 320rpx;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0) 70%);
+}
+
+.banner-title {
+  position: relative;
+  color: #fff;
+  font-size: 40rpx;
+  font-weight: 700;
+  letter-spacing: -0.5rpx;
+}
+
+.banner-desc {
+  position: relative;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 25rpx;
+  margin-top: 14rpx;
+}
+
+.banner-tags {
+  position: relative;
+  display: flex;
+  margin-top: 28rpx;
+}
+
+.btag {
+  font-size: 22rpx;
+  color: #fff;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 999rpx;
+  padding: 10rpx 22rpx;
+  margin-right: 14rpx;
+}
+
+/* ---------------- 商品卡片 ---------------- */
+.gcard {
+  background: #fff;
+  border-radius: var(--radius);
+  padding: 30rpx;
+  margin-bottom: 24rpx;
+  box-shadow: var(--shadow);
+}
+
+.gcard-main {
+  display: flex;
+  align-items: flex-start;
+}
+
+.gicon {
+  width: 88rpx;
+  height: 88rpx;
+  border-radius: 24rpx;
+  background: linear-gradient(135deg, #eafaf1, #d6f3e4);
+  text-align: center;
+  line-height: 88rpx;
+  font-size: 40rpx;
+  margin-right: 22rpx;
+  flex-shrink: 0;
+}
+
+.gmeta {
+  flex: 1;
+  min-width: 0;
+}
+
+.gtitle {
+  font-size: 32rpx;
+  font-weight: 600;
+  line-height: 1.45;
+  color: var(--ink);
+}
+
+.gdesc {
+  margin-top: 10rpx;
+  font-size: 25rpx;
+  line-height: 1.6;
+  color: var(--ink-3);
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
+
+.gmode {
+  margin-top: 16rpx;
+}
+
+.gcard-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.gbuy {
+  background: linear-gradient(135deg, #14c46f, #059a57);
+  color: #fff;
+  font-size: 26rpx;
+  font-weight: 600;
+  padding: 0 40rpx;
+  height: 68rpx;
+  line-height: 68rpx;
+  border-radius: 999rpx;
+  box-shadow: 0 8rpx 18rpx rgba(5, 154, 87, 0.22);
+}
+
+/* ---------------- 骨架屏 ---------------- */
+.s-title {
+  height: 36rpx;
+  width: 60%;
+  margin-bottom: 22rpx;
+}
+
+.s-line {
+  height: 26rpx;
+  width: 85%;
+  margin-bottom: 22rpx;
+}
+
+.s-price {
+  height: 44rpx;
+  width: 34%;
+}
+
+/* ---------------- 其他 ---------------- */
+/* 空态动作区：竖排居中。
+   ⚠️ 这两个元素不能各自 display:inline-block —— 它们会并到同一行，
+   绿色按钮就会压住下面的「运行环境自检」文字。用 flex 竖排一劳永逸。 */
+.empty-acts {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 44rpx;
+}
+
+.empty-btn {
+  display: block;
+  min-width: 300rpx;
+  padding: 0 52rpx;
+  height: 82rpx;
+  line-height: 82rpx;
+  border-radius: 999rpx;
+  background: linear-gradient(135deg, #14c46f, #059a57);
+  color: #fff;
+  font-size: 28rpx;
+  font-weight: 600;
+  box-shadow: 0 8rpx 18rpx rgba(5, 154, 87, 0.22);
+}
+
+.empty-acts .env-diagnose {
+  margin-top: 26rpx;
+}
+
+/* ---------------- 开发提示条（正式版不渲染） ---------------- */
+.permnote {
+  background: var(--warn-soft);
+  border: 2rpx solid #fde3b8;
+  border-radius: var(--radius);
+  padding: 26rpx 28rpx;
+  margin-bottom: 24rpx;
+}
+
+.permnote-head {
+  display: flex;
+  align-items: center;
+}
+
+.permnote-badge {
+  font-size: 20rpx;
+  line-height: 1;
+  color: #fff;
+  background: var(--warn);
+  border-radius: 999rpx;
+  padding: 8rpx 16rpx;
+  margin-right: 14rpx;
+  flex-shrink: 0;
+}
+
+.permnote-title {
+  font-size: 27rpx;
+  font-weight: 600;
+  color: #8a5300;
+}
+
+.permnote-body {
+  margin-top: 14rpx;
+  font-size: 24rpx;
+  line-height: 1.7;
+  color: #96601a;
+}
+
+.permnote-link {
+  margin-top: 16rpx;
+  font-size: 25rpx;
+  font-weight: 600;
+  color: var(--brand-dark);
+}
+
+/* 价格不合法比「权限没开放」更严重：它会拦住下单，所以用强调色区分开 */
+.permnote.warnnote {
+  background: var(--accent-soft);
+  border-color: #f9b4a2;
+}
+
+.permnote-badge.warn {
+  background: var(--accent);
+}
+
+.foot {
+  text-align: center;
+  padding: 16rpx 0 60rpx;
+  color: #576b95;
+  font-size: 25rpx;
+}

@@ -1,0 +1,357 @@
+/* pages/setup/setup.wxss —— 环境自检页 */
+
+/* ---------------- 总览横幅 ---------------- */
+.banner {
+  display: flex;
+  align-items: flex-start;
+  padding: 32rpx 32rpx;
+  border-radius: 28rpx;
+  margin-bottom: 24rpx;
+  box-shadow: var(--shadow);
+}
+
+.banner.ok {
+  background: linear-gradient(135deg, #14c46f 0%, #059a57 100%);
+}
+
+.banner.fail {
+  background: linear-gradient(135deg, #ffa53c 0%, #f0631a 100%);
+}
+
+.banner.warn {
+  background: linear-gradient(135deg, #ffc24d 0%, #f79009 100%);
+}
+
+.banner.checking {
+  background: linear-gradient(135deg, #b8c2cf 0%, #8d99a8 100%);
+}
+
+.banner-icon {
+  width: 64rpx;
+  height: 64rpx;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.24);
+  color: #fff;
+  font-size: 34rpx;
+  font-weight: 700;
+  text-align: center;
+  line-height: 64rpx;
+  margin-right: 22rpx;
+  flex-shrink: 0;
+}
+
+.banner-txt {
+  flex: 1;
+  min-width: 0;
+}
+
+.banner-title {
+  color: #fff;
+  font-size: 34rpx;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.banner-desc {
+  margin-top: 10rpx;
+  color: rgba(255, 255, 255, 0.92);
+  font-size: 25rpx;
+  line-height: 1.65;
+}
+
+/* ---------------- 检查清单 ---------------- */
+.chk {
+  display: flex;
+  align-items: flex-start;
+  padding: 20rpx 0;
+  border-bottom: 2rpx solid var(--line);
+}
+
+.chk:last-child {
+  border-bottom: none;
+}
+
+.chk-dot {
+  width: 44rpx;
+  height: 44rpx;
+  border-radius: 50%;
+  font-size: 24rpx;
+  font-weight: 700;
+  text-align: center;
+  line-height: 44rpx;
+  margin-right: 20rpx;
+  margin-top: 2rpx;
+  flex-shrink: 0;
+}
+
+.chk-dot.ok {
+  background: var(--brand-soft);
+  color: var(--brand-dark);
+}
+
+.chk-dot.fail {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.chk-dot.warn {
+  background: var(--warn-soft);
+  color: var(--warn);
+}
+
+.chk-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.chk-name {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: var(--ink);
+  line-height: 1.5;
+}
+
+.chk-detail {
+  margin-top: 8rpx;
+  font-size: 24rpx;
+  line-height: 1.65;
+  color: var(--ink-3);
+  word-break: break-word;
+}
+
+/* ---------------- 数据库初始化 ---------------- */
+.init-desc {
+  font-size: 25rpx;
+  line-height: 1.75;
+  color: var(--ink-2);
+  margin-bottom: 26rpx;
+}
+
+.init-tip {
+  margin-top: 22rpx;
+  padding: 18rpx 20rpx;
+  border-radius: 16rpx;
+  background: var(--bg);
+  font-size: 23rpx;
+  line-height: 1.7;
+  color: var(--ink-3);
+  word-break: break-word;
+}
+
+.init-tip-t {
+  color: var(--ink-2);
+  font-weight: 600;
+}
+
+.init-tip-k {
+  color: var(--brand-dark);
+  font-weight: 600;
+}
+
+/* ---------------- 商品配置体检 ---------------- */
+.gitem {
+  padding: 22rpx 0 20rpx;
+  border-bottom: 2rpx solid var(--line);
+}
+
+.gitem:last-of-type {
+  border-bottom: none;
+  padding-bottom: 8rpx;
+}
+
+.gitem-head {
+  display: flex;
+  align-items: center;
+}
+
+.gitem-dot {
+  width: 38rpx;
+  height: 38rpx;
+  border-radius: 50%;
+  font-size: 22rpx;
+  line-height: 38rpx;
+  text-align: center;
+  color: #fff;
+  margin-right: 14rpx;
+  flex-shrink: 0;
+}
+
+.gitem-dot.ok {
+  background: var(--brand);
+}
+
+.gitem-dot.bad {
+  background: var(--accent);
+}
+
+.gitem-name {
+  flex: 1;
+  min-width: 0;
+  font-size: 28rpx;
+  font-weight: 600;
+  color: var(--ink);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.gitem-price {
+  font-size: 28rpx;
+  font-weight: 700;
+  color: var(--accent);
+  margin-left: 16rpx;
+  flex-shrink: 0;
+}
+
+.gitem-id {
+  margin: 8rpx 0 0 52rpx;
+  font-size: 22rpx;
+  color: var(--ink-3);
+}
+
+.gitem-problems {
+  margin: 10rpx 0 0 52rpx;
+  font-size: 24rpx;
+  line-height: 1.7;
+  color: var(--accent);
+  /* 问题逐条带 \n，必须保留换行，否则会挤成一整段 */
+  white-space: pre-line;
+}
+
+.gitem-fields {
+  margin: 10rpx 0 0 52rpx;
+  font-size: 22rpx;
+  line-height: 1.7;
+  color: var(--ink-3);
+  word-break: break-all;
+}
+
+.gitem-env {
+  margin-top: 22rpx;
+  padding: 18rpx 20rpx;
+  border-radius: 16rpx;
+  background: var(--warn-soft);
+  font-size: 24rpx;
+  line-height: 1.7;
+  color: #b54708;
+  word-break: break-all;
+}
+
+.gitem-fix {
+  margin-top: 24rpx;
+}
+
+/* ---------------- 键值行 ---------------- */
+.row {
+  display: flex;
+  align-items: flex-start;
+  padding: 14rpx 0;
+}
+
+.row-k {
+  width: 150rpx;
+  flex-shrink: 0;
+  font-size: 25rpx;
+  color: var(--ink-3);
+  line-height: 1.6;
+}
+
+.row-v {
+  flex: 1;
+  min-width: 0;
+  font-size: 25rpx;
+  color: var(--ink);
+  line-height: 1.6;
+  text-align: right;
+}
+
+.tip {
+  margin-top: 18rpx;
+  padding-top: 18rpx;
+  border-top: 2rpx solid var(--line);
+}
+
+/* ---------------- 配置指引 ---------------- */
+.step {
+  padding: 24rpx 0;
+  border-bottom: 2rpx solid var(--line);
+}
+
+.step:last-child {
+  border-bottom: none;
+}
+
+.step-head {
+  display: flex;
+  align-items: center;
+}
+
+.step-n {
+  width: 44rpx;
+  height: 44rpx;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #14c46f, #059a57);
+  color: #fff;
+  font-size: 24rpx;
+  font-weight: 600;
+  text-align: center;
+  line-height: 44rpx;
+  margin-right: 18rpx;
+  flex-shrink: 0;
+}
+
+.step-title {
+  flex: 1;
+  font-size: 29rpx;
+  font-weight: 600;
+  color: var(--ink);
+  line-height: 1.5;
+}
+
+.step-detail {
+  margin-top: 14rpx;
+  padding-left: 62rpx;
+  font-size: 25rpx;
+  line-height: 1.75;
+  color: var(--ink-2);
+}
+
+.step-hint {
+  margin-top: 12rpx;
+  margin-left: 62rpx;
+  padding: 14rpx 18rpx;
+  border-radius: 14rpx;
+  background: var(--warn-soft);
+  color: #b25e00;
+  font-size: 23rpx;
+  line-height: 1.6;
+}
+
+/* ---------------- 诊断信息 ---------------- */
+.diag {
+  font-size: 23rpx;
+  line-height: 1.85;
+  color: var(--ink-2);
+  white-space: pre-wrap;
+}
+
+/* ---------------- 操作区 ---------------- */
+.acts {
+  margin-top: 8rpx;
+}
+
+.act2 {
+  margin-top: 20rpx;
+}
+
+.foot {
+  text-align: center;
+  padding: 40rpx 20rpx 60rpx;
+}
+
+/* ---------------- 骨架 ---------------- */
+.s-line {
+  height: 26rpx;
+  width: 100%;
+  margin-top: 24rpx;
+}

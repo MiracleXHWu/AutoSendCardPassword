@@ -1,0 +1,33 @@
+{
+	"setting": {
+		"es6": true,
+		"postcss": true,
+		"minified": true,
+		"uglifyFileName": false,
+		"enhance": true,
+		"packNpmRelationList": [],
+		"babelSetting": {
+			"ignore": [],
+			"disablePlugins": [],
+			"outputPath": ""
+		},
+		"useCompilerPlugins": false,
+		"compileWorklet": false,
+		"uploadWithSourceMap": true,
+		"packNpmManually": false,
+		"minifyWXSS": true,
+		"minifyWXML": true,
+		"localPlugins": false,
+		"disableUseStrict": false,
+		"condition": false
+	},
+	"compileType": "miniprogram",
+	"cloudfunctionRoot": "cloudfunctions/",
+	"simulatorPluginLibVersion": {},
+	"packOptions": {
+		"ignore": [],
+		"include": []
+	},
+	"appid": "wx6418d1284fb3e3c8",
+	"editorSetting": {}
+}

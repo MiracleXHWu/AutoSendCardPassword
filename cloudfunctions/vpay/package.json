@@ -1,0 +1,9 @@
+{
+  "name": "vpay",
+  "version": "1.0.0",
+  "description": "虚拟支付下单 / 查单 / 订单查询",
+  "main": "index.js",
+  "dependencies": {
+    "wx-server-sdk": "~2.6.3"
+  }
+}

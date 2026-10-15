@@ -1,0 +1,9 @@
+{
+  "name": "timercheck",
+  "version": "1.0.0",
+  "description": "定时兜底查单：发货推送丢失时补发货",
+  "main": "index.js",
+  "dependencies": {
+    "wx-server-sdk": "~2.6.3"
+  }
+}

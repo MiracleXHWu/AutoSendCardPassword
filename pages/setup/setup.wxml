@@ -1,0 +1,140 @@
+<!-- pages/setup/setup.wxml —— 云环境自检与配置指引 -->
+
+<view class="wrap">
+  <!-- 总览横幅 -->
+  <view class="banner {{overall}}">
+    <view class="banner-icon">{{overall === 'ok' ? '✓' : '!'}}</view>
+    <view class="banner-txt">
+      <view class="banner-title">{{checking ? '正在自检…' : overallTitle}}</view>
+      <view class="banner-desc" wx:if="{{!checking}}">{{overallDesc}}</view>
+    </view>
+  </view>
+
+  <!-- 检查清单 -->
+  <view class="card">
+    <view class="sec-title">检查清单</view>
+
+    <view class="chk" wx:for="{{checks}}" wx:key="key">
+      <view class="chk-dot {{item.state}}">
+        {{item.state === 'ok' ? '✓' : (item.state === 'warn' ? '!' : '✕')}}
+      </view>
+      <view class="chk-body">
+        <view class="chk-name">{{item.name}}</view>
+        <view class="chk-detail">{{item.detail}}</view>
+      </view>
+    </view>
+
+    <view class="skel s-line" wx:if="{{checking}}"></view>
+  </view>
+
+  <!-- 一键初始化数据库 -->
+  <view class="card">
+    <view class="sec-title">数据库初始化</view>
+    <view class="init-desc">
+      第一次使用必须先执行一次，用来创建数据集合与示例商品。数据已存在时不会覆盖或删除，可以放心重复执行。
+    </view>
+
+    <view
+      class="btn-primary {{initBusy ? 'disabled' : ''}}"
+      hover-class="pressed"
+      bindtap="onInitDb"
+    >
+      {{initBusy ? '正在初始化…' : (dataReady ? '重新初始化数据库' : '一键初始化数据库')}}
+    </view>
+
+    <view class="init-tip">
+      <text class="init-tip-t">前置条件：</text>initdb 云函数必须已部署。若点击后提示「尚未部署」，请在开发者工具左侧文件树里右键 <text class="mono">cloudfunctions/initdb</text> →「上传并部署：云端安装依赖」——注意要右键 initdb 子目录，不是 cloudfunctions 根目录。
+    </view>
+    <view class="init-tip">
+      <text class="init-tip-t">控制台等价操作：</text>云开发控制台 →「云函数」→ initdb 那一行 → 行尾「<text class="init-tip-k">云端测试</text>」→ 参数保持 <text class="mono">{}</text> → 点「运行测试」。（该按钮叫「云端测试」，不叫「测试运行」）
+    </view>
+  </view>
+
+  <!-- 商品配置体检 -->
+  <view class="card">
+    <view class="sec-title">商品配置体检</view>
+    <view class="init-desc" wx:if="{{goodsSummary}}">{{goodsSummary}}</view>
+
+    <view class="gitem" wx:for="{{goods}}" wx:key="productId">
+      <view class="gitem-head">
+        <view class="gitem-dot {{item.ok ? 'ok' : 'bad'}}">{{item.ok ? '✓' : '!'}}</view>
+        <view class="gitem-name">{{item.title || item.productId}}</view>
+        <view class="gitem-price">{{item.priceText}}</view>
+      </view>
+      <view class="gitem-id mono">{{item.productId}}</view>
+      <view class="gitem-problems" wx:if="{{item.problemsText}}">{{item.problemsText}}</view>
+      <view class="gitem-fields" wx:if="{{item.fieldsText}}">{{item.fieldsText}}</view>
+    </view>
+
+    <view class="init-desc" wx:if="{{!goods.length}}">暂无可检查的商品，先执行下方的数据库初始化。</view>
+
+    <view class="gitem-env" wx:if="{{goodsEnvMissing}}">
+      ⚠️ 缺少环境变量：<text class="mono">{{goodsEnvMissing}}</text>
+    </view>
+
+    <view
+      class="btn-ghost gitem-fix"
+      wx:if="{{fixableDemo}}"
+      hover-class="pressed"
+      bindtap="onFixDemoGoods"
+    >
+      {{fixBusy ? '修复中…' : '修复示例商品价格'}}
+    </view>
+
+    <view class="init-tip">
+      <text class="init-tip-t">体检内容：</text>price 是否为「整数分」（9.90 元必须填 990，不能带小数、不能是文本）、发货方式与链接是否匹配、是否已上架、下单所需的环境变量是否齐全。
+    </view>
+    <view class="init-tip">
+      <text class="init-tip-t">为什么重要：</text>price 不合法时商品页会显示「¥—」并禁止下单。这是刻意设计——与其按错误金额扣款，不如先拦住。
+    </view>
+  </view>
+
+  <!-- 当前参数 -->
+  <view class="card-flat">
+    <view class="sec-title">当前参数</view>
+    <view class="row">
+      <view class="row-k">AppID</view>
+      <view class="row-v mono">{{appId || '未获取到'}}</view>
+    </view>
+    <view class="row">
+      <view class="row-k">环境 ID</view>
+      <view class="row-v mono">{{env || '(未填写)'}}</view>
+    </view>
+    <view class="muted tip">
+      环境 ID 填在 miniprogram/config.js 的 cloudEnv 字段；改完保存，回到本页点「重新自检」即可生效，无需重启工具。
+    </view>
+  </view>
+
+  <!-- 配置指引 -->
+  <view class="card">
+    <view class="sec-title">配置指引（共 {{steps.length}} 步）</view>
+
+    <view class="step" wx:for="{{steps}}" wx:key="title">
+      <view class="step-head">
+        <view class="step-n">{{index + 1}}</view>
+        <view class="step-title">{{item.title}}</view>
+      </view>
+      <view class="step-detail">{{item.detail}}</view>
+      <view class="step-hint" wx:if="{{item.hint}}">{{item.hint}}</view>
+    </view>
+  </view>
+
+  <!-- 诊断信息 -->
+  <view class="card-flat">
+    <view class="sec-title">诊断信息</view>
+    <view class="diag mono">{{diag}}</view>
+  </view>
+
+  <!-- 操作区 -->
+  <view class="acts">
+    <view class="btn-primary" hover-class="pressed" bindtap="onRetry">
+      {{checking ? '自检中…' : '重新自检'}}
+    </view>
+    <view class="btn-ghost act2" hover-class="pressed" bindtap="onCopy">复制诊断信息</view>
+    <view class="btn-ghost act2" hover-class="pressed" bindtap="goHome">返回首页</view>
+  </view>
+
+  <view class="muted foot">
+    提示：控制台出现 -501000 / INVALID_ENV 是环境未配置；点「立即购买」提示「云函数环境变量未配置完整」是虚拟支付的 4 个环境变量没填；商品显示「¥NaN」或「¥—」则是 price 字段不合法。三种情况都能在上面的检查清单里找到对应项。
+  </view>
+</view>

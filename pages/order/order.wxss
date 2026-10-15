@@ -1,0 +1,219 @@
+/* pages/order/order.wxss */
+
+/* ---------------- 状态卡 ---------------- */
+.status {
+  border-radius: 28rpx;
+  padding: 52rpx 36rpx;
+  margin-bottom: 24rpx;
+  text-align: center;
+  box-shadow: var(--shadow);
+  background: #fff;
+}
+
+.status.ok {
+  background: linear-gradient(135deg, #14c46f 0%, #059a57 100%);
+  box-shadow: 0 14rpx 34rpx rgba(5, 154, 87, 0.24);
+}
+
+.status-icon {
+  margin-bottom: 24rpx;
+}
+
+.ring {
+  width: 108rpx;
+  height: 108rpx;
+  border-radius: 50%;
+  margin: 0 auto;
+  font-size: 54rpx;
+  line-height: 108rpx;
+  text-align: center;
+  background: #f2f4f7;
+  color: var(--ink-3);
+}
+
+.status.ok .ring {
+  background: rgba(255, 255, 255, 0.22);
+  color: #fff;
+}
+
+.status.wait .ring {
+  background: var(--warn-soft);
+  color: var(--warn);
+  animation: pulse 1.8s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.07);
+    opacity: 0.82;
+  }
+}
+
+.status-title {
+  font-size: 36rpx;
+  font-weight: 700;
+  line-height: 1.4;
+  color: var(--ink);
+}
+
+.status.ok .status-title {
+  color: #fff;
+}
+
+.status-desc {
+  margin-top: 14rpx;
+  font-size: 25rpx;
+  line-height: 1.65;
+  color: var(--ink-3);
+}
+
+.status.ok .status-desc {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+/* ---------------- 发货内容 ---------------- */
+.item {
+  padding: 22rpx 0;
+  border-bottom: 2rpx solid var(--line);
+}
+
+.item:last-of-type {
+  border-bottom: none;
+}
+
+.item-head {
+  display: inline-block;
+  font-size: 23rpx;
+  color: var(--brand-dark);
+  background: var(--brand-soft);
+  padding: 8rpx 18rpx;
+  border-radius: 10rpx;
+  margin-bottom: 18rpx;
+}
+
+.label {
+  font-size: 24rpx;
+  color: var(--ink-3);
+}
+
+.value {
+  margin-top: 12rpx;
+  font-size: 28rpx;
+  line-height: 1.55;
+  color: var(--ink);
+  background: #f7f9fb;
+  border: 2rpx solid var(--line);
+  border-radius: var(--radius-sm);
+  padding: 20rpx 24rpx;
+}
+
+.value-pwd {
+  font-size: 38rpx;
+  font-weight: 700;
+  letter-spacing: 8rpx;
+  color: var(--brand-dark);
+  background: var(--brand-soft);
+  border-color: #cdeedf;
+}
+
+.acts {
+  display: flex;
+  margin-top: 18rpx;
+}
+
+.act {
+  flex: 1;
+  margin-right: 18rpx;
+}
+
+.act:last-child {
+  margin-right: 0;
+}
+
+.copy-all {
+  margin-top: 34rpx;
+}
+
+.note {
+  margin-top: 22rpx;
+}
+
+.refresh {
+  margin-top: 28rpx;
+}
+
+/* ---------------- 订单信息 ---------------- */
+.row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 16rpx 0;
+}
+
+.row-k {
+  flex-shrink: 0;
+  margin-right: 24rpx;
+  font-size: 25rpx;
+  color: var(--ink-3);
+}
+
+.row-v {
+  flex: 1;
+  min-width: 0;
+  text-align: right;
+  font-size: 26rpx;
+  color: var(--ink);
+}
+
+.row-v.small {
+  font-size: 23rpx;
+  color: var(--ink-2);
+}
+
+.price-inline {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.contact {
+  background: transparent;
+  border: none;
+  padding: 0;
+  margin: 0;
+  font-size: 26rpx;
+  line-height: 1.6;
+  color: #576b95;
+  text-align: left;
+}
+
+.contact::after {
+  border: none;
+}
+
+/* ---------------- 骨架屏 ---------------- */
+.s-ring {
+  width: 108rpx;
+  height: 108rpx;
+  border-radius: 50%;
+  margin: 0 auto 24rpx;
+}
+
+.s-line {
+  height: 26rpx;
+  width: 100%;
+  margin-bottom: 18rpx;
+}
+
+.s-line.short {
+  width: 55%;
+}
+
+.s-line.center {
+  margin-left: auto;
+  margin-right: auto;
+}

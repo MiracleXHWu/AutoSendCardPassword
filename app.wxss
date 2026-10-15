@@ -1,0 +1,360 @@
+/* ============================================================
+   app.wxss —— 全局设计系统
+   ============================================================ */
+page {
+  /* 主色 / 强调色 */
+  --brand: #12b76a;
+  --brand-dark: #059a57;
+  --brand-soft: #e7f8ef;
+  --accent: #ff5b3c;
+  --accent-soft: #ffefe9;
+  --warn: #f79009;
+  --warn-soft: #fff5e6;
+
+  /* 文字层级 */
+  --ink: #101828;
+  --ink-2: #475467;
+  --ink-3: #98a2b3;
+
+  /* 结构与背景 */
+  --line: #f0f2f5;
+  --bg: #f5f7fa;
+  --card: #ffffff;
+  --radius: 24rpx;
+  --radius-sm: 16rpx;
+  --shadow: 0 8rpx 32rpx rgba(16, 24, 40, 0.06);
+  --shadow-up: 0 -6rpx 24rpx rgba(16, 24, 40, 0.06);
+
+  background: var(--bg);
+  color: var(--ink);
+  font-size: 28rpx;
+  font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Helvetica Neue', 'Microsoft YaHei',
+    Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+view,
+text {
+  box-sizing: border-box;
+  word-break: break-word;
+}
+
+/* ---------------- 布局 ---------------- */
+.wrap {
+  padding: 24rpx 28rpx 180rpx;
+}
+
+.card {
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 32rpx;
+  margin-bottom: 24rpx;
+  box-shadow: var(--shadow);
+}
+
+.card-flat {
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 32rpx;
+  margin-bottom: 24rpx;
+  border: 2rpx solid var(--line);
+}
+
+.sec-title {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: var(--ink);
+  margin-bottom: 24rpx;
+  display: flex;
+  align-items: center;
+}
+
+.sec-title::before {
+  content: '';
+  width: 8rpx;
+  height: 28rpx;
+  border-radius: 4rpx;
+  background: linear-gradient(180deg, #14c46f, #059a57);
+  margin-right: 16rpx;
+}
+
+.divider {
+  height: 2rpx;
+  background: var(--line);
+  margin: 24rpx 0;
+}
+
+/* ---------------- 文字 ---------------- */
+.t-main {
+  font-size: 34rpx;
+  font-weight: 600;
+  line-height: 1.45;
+  color: var(--ink);
+}
+
+.t-sub {
+  font-size: 26rpx;
+  line-height: 1.65;
+  color: var(--ink-2);
+}
+
+.muted {
+  color: var(--ink-3);
+  font-size: 24rpx;
+  line-height: 1.6;
+}
+
+.mono {
+  font-family: Menlo, Consolas, 'Courier New', monospace;
+  word-break: break-all;
+}
+
+/* 价格：¥ 小、数字大 */
+.price {
+  color: var(--accent);
+  display: flex;
+  align-items: baseline;
+  font-weight: 700;
+}
+
+.price .sym {
+  font-size: 26rpx;
+  margin-right: 4rpx;
+}
+
+.price .num {
+  font-size: 44rpx;
+  letter-spacing: -1rpx;
+}
+
+/* ---------------- 按钮 ---------------- */
+.btn-primary {
+  background: linear-gradient(135deg, #14c46f 0%, #059a57 100%);
+  color: #fff;
+  border-radius: 999rpx;
+  font-size: 30rpx;
+  font-weight: 600;
+  height: 92rpx;
+  line-height: 92rpx;
+  text-align: center;
+  box-shadow: 0 10rpx 24rpx rgba(5, 154, 87, 0.24);
+  transition: transform 0.15s ease, opacity 0.15s ease;
+}
+
+.btn-primary.disabled,
+.btn-primary.is-disabled {
+  opacity: 0.55;
+  box-shadow: none;
+}
+
+/* 通用点击反馈：view 上写 hover-class="pressed" 即可 */
+.pressed {
+  transform: scale(0.98);
+  opacity: 0.9;
+}
+
+.btn-ghost {
+  background: #fff;
+  color: var(--brand-dark);
+  border: 2rpx solid #a6e7c6;
+  border-radius: 999rpx;
+  font-size: 28rpx;
+  font-weight: 500;
+  height: 76rpx;
+  line-height: 72rpx;
+  text-align: center;
+}
+
+.btn-ghost.on-dark {
+  background: rgba(255, 255, 255, 0.16);
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+/* ---------------- 标签 ---------------- */
+.tag {
+  display: inline-block;
+  font-size: 22rpx;
+  line-height: 1;
+  padding: 10rpx 18rpx;
+  border-radius: 999rpx;
+  font-weight: 500;
+}
+
+.tag-ok {
+  background: var(--brand-soft);
+  color: var(--brand-dark);
+}
+
+.tag-wait {
+  background: var(--warn-soft);
+  color: var(--warn);
+}
+
+.tag-refund {
+  background: #f2f4f7;
+  color: var(--ink-3);
+}
+
+.tag-accent {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+/* ---------------- 空态 / 骨架屏 ---------------- */
+.empty {
+  text-align: center;
+  padding: 160rpx 60rpx;
+}
+
+.empty .emoji {
+  font-size: 96rpx;
+  line-height: 1;
+  opacity: 0.85;
+}
+
+.empty .title {
+  margin-top: 32rpx;
+  font-size: 30rpx;
+  font-weight: 600;
+  color: var(--ink-2);
+}
+
+.empty .desc {
+  margin-top: 14rpx;
+  font-size: 25rpx;
+  color: var(--ink-3);
+  line-height: 1.7;
+}
+
+.skel {
+  background: linear-gradient(90deg, #eef1f5 25%, #f7f9fb 37%, #eef1f5 63%);
+  background-size: 400% 100%;
+  animation: skel 1.4s ease infinite;
+  border-radius: 12rpx;
+}
+
+@keyframes skel {
+  0% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0 50%;
+  }
+}
+
+/* ---------------- 云环境未就绪引导卡（全局共用） ---------------- */
+.envcard {
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 36rpx 32rpx;
+  box-shadow: var(--shadow);
+}
+
+.envcard-head {
+  display: flex;
+  align-items: flex-start;
+}
+
+.envcard-icon {
+  width: 76rpx;
+  height: 76rpx;
+  border-radius: 22rpx;
+  background: var(--warn-soft);
+  font-size: 36rpx;
+  text-align: center;
+  line-height: 76rpx;
+  margin-right: 20rpx;
+  flex-shrink: 0;
+}
+
+.envcard-meta {
+  flex: 1;
+  min-width: 0;
+}
+
+.envcard-title {
+  font-size: 31rpx;
+  font-weight: 600;
+  line-height: 1.45;
+  color: var(--ink);
+}
+
+.envcard-desc {
+  margin-top: 10rpx;
+  font-size: 25rpx;
+  line-height: 1.65;
+  color: var(--ink-2);
+}
+
+.envcard-steps {
+  margin: 28rpx 0 32rpx;
+  padding: 24rpx 24rpx 8rpx;
+  border-radius: var(--radius-sm);
+  background: #f8fafc;
+}
+
+.envstep {
+  display: flex;
+  align-items: flex-start;
+  font-size: 25rpx;
+  line-height: 1.65;
+  color: var(--ink-2);
+  padding-bottom: 18rpx;
+}
+
+.envstep-n {
+  display: inline-block;
+  width: 36rpx;
+  height: 36rpx;
+  border-radius: 50%;
+  background: var(--brand);
+  color: #fff;
+  font-size: 21rpx;
+  text-align: center;
+  line-height: 36rpx;
+  margin-right: 14rpx;
+  flex-shrink: 0;
+}
+
+.envcard-retry {
+  margin-top: 20rpx;
+}
+
+/* 修复期也别把「加载失败」这一支丢掉：给一个统一的诊断入口 */
+.env-diagnose {
+  display: inline-block;
+  margin-top: 28rpx;
+  font-size: 25rpx;
+  color: #576b95;
+}
+
+/* ---------------- 底部固定操作栏 ---------------- */
+.footbar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 20;
+  padding: 20rpx 28rpx calc(20rpx + constant(safe-area-inset-bottom));
+  padding-bottom: calc(20rpx + env(safe-area-inset-bottom));
+  background: rgba(255, 255, 255, 0.94);
+  backdrop-filter: blur(20rpx);
+  box-shadow: var(--shadow-up);
+  display: flex;
+  align-items: center;
+}
+
+.footbar .left {
+  flex: 1;
+  min-width: 0;
+}
+
+.footbar .left .muted {
+  margin-bottom: 4rpx;
+}
+
+.footbar .action {
+  width: 320rpx;
+  flex-shrink: 0;
+}

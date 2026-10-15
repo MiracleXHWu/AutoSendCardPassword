@@ -1,0 +1,9 @@
+{
+  "name": "qrcode",
+  "version": "1.0.0",
+  "description": "生成带 scene 的小程序码（扫码进入指定商品）",
+  "main": "index.js",
+  "dependencies": {
+    "wx-server-sdk": "~2.6.3"
+  }
+}

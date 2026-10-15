@@ -1,0 +1,27 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/goods/goods",
+    "pages/orders/orders",
+    "pages/order/order",
+    "pages/setup/setup"
+  ],
+  "window": {
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#ffffff",
+    "navigationBarTitleText": "资料小铺",
+    "navigationBarTextStyle": "black"
+  },
+  "tabBar": {
+    "custom": true,
+    "color": "#98a2b3",
+    "selectedColor": "#12b76a",
+    "backgroundColor": "#ffffff",
+    "list": [
+      { "pagePath": "pages/index/index", "text": "商品" },
+      { "pagePath": "pages/orders/orders", "text": "我的订单" }
+    ]
+  },
+  "cloud": true,
+  "sitemapLocation": "sitemap.json"
+}

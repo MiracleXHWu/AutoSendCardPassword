@@ -1,0 +1,90 @@
+<!-- pages/orders/orders.wxml —— 我的订单 -->
+
+<!-- 骨架屏 -->
+<view wx:if="{{loading}}" class="wrap">
+  <view class="ocard" wx:for="{{[1,2,3]}}" wx:key="*this">
+    <view class="skel s-line"></view>
+    <view class="skel s-line short"></view>
+    <view class="skel s-price"></view>
+  </view>
+</view>
+
+<!-- 云环境未就绪 -->
+<view wx:elif="{{envIssue}}" class="wrap">
+  <view class="envcard">
+    <view class="envcard-head">
+      <view class="envcard-icon">🔧</view>
+      <view class="envcard-meta">
+        <view class="envcard-title">{{envIssue.title}}</view>
+        <view class="envcard-desc">{{envIssue.message}}</view>
+      </view>
+    </view>
+
+    <view class="envcard-steps">
+      <view class="envstep">
+        <text class="envstep-n">1</text>
+        <text>换掉游客号：云开发不支持游客号/测试号，换成你自己的 AppID</text>
+      </view>
+      <view class="envstep">
+        <text class="envstep-n">2</text>
+        <text>点「云开发」新建环境，并把环境 ID 填进 miniprogram/config.js</text>
+      </view>
+      <view class="envstep">
+        <text class="envstep-n">3</text>
+        <text>部署 6 个云函数，并运行一次 initdb</text>
+      </view>
+    </view>
+
+    <view class="btn-primary" hover-class="pressed" bindtap="goSetup">查看完整配置指引</view>
+    <view class="btn-ghost envcard-retry" hover-class="pressed" bindtap="retryEnv">
+      我已配置好，重新自检
+    </view>
+  </view>
+</view>
+
+<!-- 加载失败 -->
+<view wx:elif="{{failed}}" class="empty">
+  <view class="emoji">⚠️</view>
+  <view class="title">订单加载失败</view>
+  <view class="desc">请下拉刷新重试</view>
+  <view class="env-diagnose" bindtap="goSetup">运行环境自检 ›</view>
+</view>
+
+<!-- 订单列表 -->
+<block wx:elif="{{orders.length}}">
+  <view class="wrap">
+    <view
+      class="ocard"
+      wx:for="{{orders}}"
+      wx:key="_id"
+      data-outtradeno="{{item.outTradeNo}}"
+      bindtap="goDetail"
+      hover-class="pressed"
+    >
+      <view class="ocard-top">
+        <view class="ocard-name">{{item.goodsTitle || item.productId}}</view>
+        <view class="tag {{item.statusClass}}">{{item.statusText}}</view>
+      </view>
+
+      <view class="muted ocard-time">{{item.timeText}}</view>
+
+      <view class="divider"></view>
+
+      <view class="ocard-foot">
+        <view class="price">
+          <text class="sym">¥</text>
+          <text class="num">{{item.priceText}}</text>
+        </view>
+        <view class="ocard-link">{{item.delivered ? '查看下载信息 ›' : '查看详情 ›'}}</view>
+      </view>
+    </view>
+  </view>
+</block>
+
+<!-- 空态 -->
+<view wx:else class="empty">
+  <view class="emoji">📭</view>
+  <view class="title">还没有订单</view>
+  <view class="desc">购买后，你获得的链接与提取码会永久显示在这里</view>
+  <view class="empty-btn" hover-class="pressed" bindtap="goShop">去逛逛</view>
+</view>

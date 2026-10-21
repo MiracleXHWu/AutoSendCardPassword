@@ -17,7 +17,7 @@ module.exports = {
    *     Environment not found, there is no default environment exists
    *   显式填写环境 ID 可以从根上避免这个问题。
    */
-  cloudEnv: 'cloud1-d3glwdarv1c16282d',
+  cloudEnv: 'cloud1-xxxxxxx',
 
   /**
    * 检测到云环境不可用时，是否自动弹出配置指引

@@ -1,0 +1,107 @@
+<!-- pages/order-detail/order-detail.wxml -->
+<view class="detailpage">
+  <view wx:if="{{loading}}" class="pane" style="margin:16px">
+    <view class="skeleton" style="height:20px;width:50%"></view>
+    <view class="skeleton" style="height:14px;width:80%;margin-top:12px"></view>
+  </view>
+
+  <view wx:elif="{{error}}" class="empty">
+    <view class="big">⚠</view>
+    <view>{{error}}</view>
+    <view class="btn small ghost" style="display:inline-flex;margin-top:14px" bindtap="gotoOrders">返回订单列表</view>
+  </view>
+
+  <block wx:else>
+    <!-- 状态条 -->
+    <view class="status-bar {{order.paid ? 'ok' : 'wait'}}">
+      <view class="sb-ico">{{order.paid ? '✓' : '!'}}</view>
+      <view class="flex1">
+        <view class="sb-title">{{order.paid ? '已支付 · 发货内容已生成' : '待支付'}}</view>
+        <view class="sb-sub">{{order.paid ? '虚拟商品，不支持无理由退款' : '完成支付后系统自动发货'}}</view>
+      </view>
+    </view>
+
+    <!-- 发货内容 -->
+    <view wx:if="{{order.paid}}" class="pane block">
+      <view class="row-between" style="margin-bottom:10px">
+        <text class="block-title" style="margin:0">发货内容</text>
+        <text wx:if="{{secret}}" class="copy" bindtap="copySecret">复制全部</text>
+      </view>
+
+      <view wx:if="{{needPassword && !secret}}" class="pwd-box">
+        <view class="muted">该订单设置了查单密码，请输入后查看卡密</view>
+        <view class="pwd-row">
+          <input
+            class="pwd-input"
+            password
+            value="{{passwordInput}}"
+            placeholder="请输入查单密码"
+            placeholder-class="ph"
+            bindinput="onPasswordInput"
+          />
+          <view class="btn small" bindtap="submitPassword">查看</view>
+        </view>
+      </view>
+
+      <view wx:elif="{{secret}}" class="secret">
+        <text class="secret-text" selectable user-select>{{secret}}</text>
+      </view>
+
+      <view wx:elif="{{secretLoading}}" class="muted">正在获取发货内容…</view>
+
+      <view wx:else class="secret-empty">
+        <view class="muted">{{secretError || '暂未获取到发货内容'}}</view>
+        <view class="btn small ghost" style="display:inline-flex;margin-top:10px" bindtap="refresh">重新获取</view>
+      </view>
+
+      <view wx:if="{{leaveMessage}}" class="leave">
+        <view class="leave-title">发货留言</view>
+        <view class="leave-body">{{leaveMessage}}</view>
+      </view>
+    </view>
+
+    <view wx:else class="pane block">
+      <view class="block-title">尚未支付</view>
+      <view class="muted" style="line-height:1.8">
+        订单已创建但未完成付款。支付链接自下单起 5 分钟内有效，超时后点下方「继续支付」即可重新发起，无需重复下单。
+      </view>
+      <view class="btn" style="margin-top:14px" bindtap="gotoPay">继续支付</view>
+    </view>
+
+    <!-- 订单信息 -->
+    <view class="pane block">
+      <view class="block-title">订单信息</view>
+      <view class="info-row">
+        <text class="lbl">订单号</text>
+        <view class="val-row">
+          <text class="val mono">{{order.tradeNo}}</text>
+          <text class="copy" bindtap="copyTradeNo">复制</text>
+        </view>
+      </view>
+      <view class="info-row">
+        <text class="lbl">商品</text>
+        <text class="val ellipsis" style="max-width:62%">{{order.name || '—'}}</text>
+      </view>
+      <view wx:if="{{order.skuText}}" class="info-row">
+        <text class="lbl">规格</text>
+        <text class="val">{{order.skuText}} · {{order.num}} 件</text>
+      </view>
+      <view class="info-row">
+        <text class="lbl">金额</text>
+        <text class="val price" style="font-size:14px"><text class="unit">¥</text>{{order.amountText || '—'}}</text>
+      </view>
+      <view wx:if="{{order.contact}}" class="info-row">
+        <text class="lbl">联系方式</text>
+        <text class="val">{{order.contact}}</text>
+      </view>
+      <view wx:if="{{order.timeText}}" class="info-row">
+        <text class="lbl">下单时间</text>
+        <text class="val">{{order.timeText}}</text>
+      </view>
+    </view>
+
+    <view class="help-entry" bindtap="gotoHelp">发货内容有问题？申请补发或联系客服 ›</view>
+
+    <view style="height:20px"></view>
+  </block>
+</view>

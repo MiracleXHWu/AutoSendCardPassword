@@ -1,105 +1,179 @@
 /**
- * utils/format.js —— 展示层数值归一化
+ * utils/format.js —— 展示层格式化
  *
- * 为什么需要单独一层：
- *   goods.price 的单位是「分」，页面普遍写成 (price / 100).toFixed(2)。
- *   一旦 price 缺失、是 null、或是控制台手工录入的文本，除法的结果就是 NaN，
- *   页面上直接显示「¥NaN」——既看不出原因，也不会报错，排查成本很高。
- *
- *   这里统一做两件事：
- *     ① 归一化：把「看起来像整数分的值」转成 number，其余一律判为无效；
- *     ② 说明原因：无效时给出人话原因（字段缺失 / 类型不对 / 值不合法），
- *        页面据此把「¥NaN」换成「价格未配置」并阻断下单，而不是先收钱再出错。
- *
- * ⚠️ 单笔金额一旦展示错误，用户就会按错误的价格付款，所以这里的原则是
- *    **宁可不显示，也不猜**：无法确定价格时返回 valid=false，绝不用兜底数字糊过去。
+ * 与旧版的关键差别：acg-faka 返回的价格单位是「元」（decimal 10,2），
+ * 不是「分」。所以这里不再做 /100，只做字符串规范化。
+ * 金额一旦展示错，用户就会按错价付款，因此非法值统一显示「—」而不是猜一个数。
  */
 
-/** 类型描述，用于给用户/开发者看清数据库里到底存了什么 */
-function typeName(v) {
-  if (v === null) return 'null';
-  if (v === undefined) return '缺失';
-  if (Array.isArray(v)) return 'array';
-  return typeof v;
+/** 任意值 → 数字，失败返回 def */
+function num(v, def) {
+  const n = Number(v);
+  return Number.isFinite(n) ? n : def == null ? 0 : def;
 }
 
 /**
- * 把任意值归一化为「整数分」
- * @returns {number|null} 合法时返回正整数（分），否则 null
+ * 金额展示：2 → "2"，1.5 → "1.50"，1.555 → "1.56"
+ * 保留两位以内小数，去掉无意义的尾零，但 1.5 显示为 1.50 更符合价签习惯。
  */
-function toFen(v) {
-  if (typeof v === 'number') {
-    if (!isFinite(v)) return null;
-    // 必须是整数：分没有小数。9.9 只会是「误把元当分填了」或数据被改动过
-    return Number.isInteger(v) && v > 0 ? v : null;
-  }
-  if (typeof v === 'string') {
-    const s = v.trim();
-    // 容忍控制台手工录入时存成文本的情况："990" 与 990 等价，可以安全地当作同一个值
-    if (/^\d+$/.test(s)) {
-      const n = Number(s);
-      return n > 0 ? n : null;
-    }
-    return null;
-  }
-  return null;
+function money(v) {
+  if (v === null || v === undefined || v === '') return '—';
+  const n = Number(v);
+  if (!Number.isFinite(n)) return '—';
+  return n.toFixed(2);
 }
 
-/** 分 → 展示用元字符串（两位小数） */
-function fenToYuan(fen) {
-  const n = toFen(fen);
-  return n === null ? '' : (n / 100).toFixed(2);
+/** 金额（紧凑）：2.00 → "2"，1.50 → "1.5" */
+function moneyShort(v) {
+  const s = money(v);
+  if (s === '—') return s;
+  return s.replace(/\.00$/, '').replace(/(\.\d)0$/, '$1');
+}
+
+/** 销量：1234 → "1.2k" */
+function sold(n) {
+  const v = num(n, 0);
+  if (v < 1000) return String(v);
+  if (v < 10000) return (v / 1000).toFixed(1) + 'k';
+  return (v / 10000).toFixed(1) + 'w';
+}
+
+/** 解析 "2026-11-23 20:47:56" 这类后端时间串 */
+function parseTime(value) {
+  if (!value) return 0;
+  if (typeof value === 'number') return value < 1e12 ? value * 1000 : value;
+  const s = String(value).replace(/-/g, '/');
+  const t = new Date(s).getTime();
+  return Number.isFinite(t) ? t : 0;
+}
+
+function pad(n) {
+  return n < 10 ? '0' + n : String(n);
+}
+
+/** 时间戳/时间串 → "11-23 20:47" */
+function formatTime(value) {
+  const t = parseTime(value);
+  if (!t) return '';
+  const d = new Date(t);
+  return pad(d.getMonth() + 1) + '-' + pad(d.getDate()) + ' ' + pad(d.getHours()) + ':' + pad(d.getMinutes());
+}
+
+/** 时间戳/时间串 → "2026-11-23 20:47:56" */
+function fullTime(value) {
+  const t = parseTime(value);
+  if (!t) return '';
+  const d = new Date(t);
+  return (
+    d.getFullYear() +
+    '-' +
+    pad(d.getMonth() + 1) +
+    '-' +
+    pad(d.getDate()) +
+    ' ' +
+    pad(d.getHours()) +
+    ':' +
+    pad(d.getMinutes()) +
+    ':' +
+    pad(d.getSeconds())
+  );
+}
+
+/** 相对时间：刚刚 / 5 分钟前 / 3 小时前 / 11-20 */
+function relativeTime(value) {
+  const t = parseTime(value);
+  if (!t) return '';
+  const diff = Date.now() - t;
+  if (diff < 0) return formatTime(t);
+  if (diff < 60 * 1000) return '刚刚';
+  if (diff < 3600 * 1000) return Math.floor(diff / 60000) + ' 分钟前';
+  if (diff < 86400 * 1000) return Math.floor(diff / 3600000) + ' 小时前';
+  if (diff < 7 * 86400 * 1000) return Math.floor(diff / 86400000) + ' 天前';
+  return formatTime(t);
+}
+
+/** 倒计时：剩余毫秒 → "14:59" 或 "01:02:03" */
+function countdown(ms) {
+  const total = Math.max(0, Math.floor(ms / 1000));
+  const h = Math.floor(total / 3600);
+  const m = Math.floor((total % 3600) / 60);
+  const s = total % 60;
+  return h > 0 ? pad(h) + ':' + pad(m) + ':' + pad(s) : pad(m) + ':' + pad(s);
+}
+
+/** 手机号脱敏：13812345678 → 138****5678 */
+function maskPhone(phone) {
+  const s = String(phone || '');
+  return /^\d{11}$/.test(s) ? s.slice(0, 3) + '****' + s.slice(7) : s;
+}
+
+/** 联系方式类型（faka contact_type：0 任意 / 1 手机 / 2 邮箱 / 3 QQ） */
+function contactLabel(type) {
+  return { 0: '联系方式', 1: '手机号', 2: '邮箱', 3: 'QQ 号' }[num(type, 0)] || '联系方式';
+}
+
+function contactPlaceholder(type) {
+  return { 0: '手机号 / 邮箱 / QQ，用于查单', 1: '请输入 11 位手机号', 2: '请输入邮箱地址', 3: '请输入 QQ 号' }[
+    num(type, 0)
+  ];
 }
 
 /**
- * 价格展示状态（页面直接用这个）
- * @returns {{valid:boolean, fen:number|null, text:string, reason:string, raw:any, rawType:string}}
- *   valid   价格可用
- *   text    有效时是 "9.90"；无效时是 "—"（页面显示为「¥—」）
- *   reason  无效原因（人话），有效时为空串
+ * 富文本处理：faka 的 description 是后台富文本编辑器产出的 HTML。
+ * 小程序富文本组件不认 <style>，也会让宽图溢出，这里做两件事：
+ *   1. 去掉 script/style/iframe 等危险或无效标签；
+ *   2. 给 img 加 max-width，防止横向撑破页面。
  */
-function priceOf(v) {
-  const fen = toFen(v);
-  const rawType = typeName(v);
-
-  if (fen !== null) {
-    return { valid: true, fen, text: fenToYuan(fen), reason: '', raw: v, rawType };
-  }
-
-  let reason;
-  if (v === null || v === undefined) {
-    reason = '商品记录里没有 price 字段（价格缺失）';
-  } else if (typeof v === 'number' && !isFinite(v)) {
-    // NaN / Infinity：typeof 也是 'number'，必须先于小数分支判断，
-    // 否则会给出「price 是小数（NaN）」这种自相矛盾的提示
-    reason = 'price 的值是 ' + v + '，不是有效数字';
-  } else if (typeof v === 'number' && !Number.isInteger(v)) {
-    reason =
-      'price 是小数（' +
-      v +
-      '）。单位必须是「整数分」——9.90 元应填 990，而不是 9.9';
-  } else if (typeof v === 'number') {
-    reason = 'price 必须大于 0（当前为 ' + v + '）';
-  } else if (v === '') {
-    reason = 'price 是空字符串';
-  } else if (rawType === 'string') {
-    reason = 'price 是文本「' + String(v) + '」，且不是纯数字';
-  } else {
-    reason = 'price 的类型是 ' + rawType + '，必须是数字';
-  }
-
-  return { valid: false, fen: null, text: '—', reason, raw: v, rawType };
+function richText(html) {
+  let s = String(html || '');
+  if (!s) return '';
+  s = s.replace(/<(script|style|iframe|object|embed)[\s\S]*?<\/\1>/gi, '');
+  s = s.replace(/<img([^>]*)>/gi, function (m, attrs) {
+    let a = attrs
+      .replace(/\swidth\s*=\s*["']?[^"'>]*["']?/gi, '')
+      .replace(/\sheight\s*=\s*["']?[^"'>]*["']?/gi, '');
+    if (!/style=/i.test(a)) a += ' style="max-width:100%;height:auto;display:block;"';
+    return '<img' + a + '>';
+  });
+  s = s.replace(/<table/gi, '<table style="max-width:100%;"');
+  return s;
 }
 
-/** 是否为可展示的商品记录（给列表页判断用） */
-function isSellable(g) {
-  return !!g && priceOf(g.price).valid;
+/** 纯文本摘要（列表里展示详情的前 60 字） */
+function plainText(html, max) {
+  const s = String(html || '')
+    .replace(/<[^>]+>/g, '')
+    .replace(/&nbsp;/g, ' ')
+    .replace(/&amp;/g, '&')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/\s+/g, ' ')
+    .trim();
+  const limit = max || 60;
+  return s.length > limit ? s.slice(0, limit) + '…' : s;
+}
+
+/** 订单状态文案 */
+function orderStatusText(order) {
+  if (!order) return '';
+  if (order.paid) return '已支付';
+  return '待支付';
 }
 
 module.exports = {
-  toFen,
-  fenToYuan,
-  priceOf,
-  isSellable,
-  typeName
+  num,
+  money,
+  moneyShort,
+  sold,
+  parseTime,
+  formatTime,
+  fullTime,
+  relativeTime,
+  countdown,
+  maskPhone,
+  contactLabel,
+  contactPlaceholder,
+  richText,
+  plainText,
+  orderStatusText
 };

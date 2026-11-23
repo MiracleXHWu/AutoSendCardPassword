@@ -1,245 +1,204 @@
-// pages/goods/goods.js —— 商品详情页（小程序码扫码落地页）
-const vpay = require('../../utils/vpay.js');
-const cloud = require('../../utils/cloud.js');
+// pages/goods/goods.js —— 商品详情：规格、实时库存与价格、立即购买
+const api = require('../../services/api.js');
+const auth = require('../../services/auth.js');
 const format = require('../../utils/format.js');
 
-const DEFAULT_NOTICE = [
-  '付款成功后系统会立即自动发货，无需人工等待。',
-  '发货内容永久保存在「我的订单」中，随时可重新查看。',
-  '虚拟内容一经发出不支持无理由退款；若链接失效，请联系客服补发。'
-].join('\n');
-
+// 用安全访问层替代模块顶层 getApp()：热重载/独立上下文下 App 可能尚未就绪
+const app = require('../../utils/app.js');
 Page({
   data: {
     loading: true,
-    notFound: false,
-    envIssue: null,
-    goods: null,
+    error: '',
+    detail: null,
+    descHtml: '',
+    num: 1,
+    min: 1,
+    max: 0,
+    race: '',
+    sku: {},
     priceText: '',
-    // 价格不合法：不显示金额、不允许下单，改为提示去修配置
-    priceInvalid: false,
-    priceReason: '',
-    // 只有开发者工具/体验版展示「原因 + 修法」，正式版顾客看不到
-    devHints: false,
-    buying: false,
-    fromScan: false,
-    perks: [],
-    notice: ''
+    stock: 0,
+    stockText: '',
+    noCover: true,
+    canBuy: false,
+    priceLoading: false
   },
 
   onLoad(query) {
-    const productId = query.productId || query.pid || '';
-    const rawScene = query.scene ? decodeURIComponent(query.scene) : '';
-    this.productId = productId;
-    this.rawScene = rawScene;
-    this.setData({ fromScan: !!rawScene, devHints: cloud.showDevHints() });
-    this.init();
-  },
-
-  /** 扫码进入时，先把 scene 解成 productId，再加载商品 */
-  async init() {
-    let pid = this.productId;
-    if (!pid && this.rawScene) pid = await this.resolveScene(this.rawScene);
-    if (!pid) {
-      this.setData({ loading: false, notFound: true });
+    this.id = query.id;
+    if (!this.id) {
+      this.setData({ loading: false, error: '缺少商品参数' });
       return;
     }
-    this.productId = pid;
-    await this.loadGoods(pid);
+    this.load();
   },
 
-  async resolveScene(scene) {
-    // 'g_xxx' 这种格式可以在本地直接解出，无需请求
-    if (scene.indexOf('g_') === 0) return scene.slice(2);
+  async load() {
+    this.setData({ loading: true, error: '' });
     try {
-      const r = await vpay.callFn('qrcode', { action: 'resolve', scene });
-      return r.productId || '';
-    } catch (e) {
-      console.error('[goods] resolveScene', e);
-      return '';
-    }
-  },
+      const detail = await api.getCommodityDetail(this.id);
+      const race = detail.races.length ? detail.races[0].name : '';
+      const sku = {};
+      detail.skuGroups.forEach(function (g) {
+        if (g.values.length) sku[g.name] = g.values[0];
+      });
 
-  async loadGoods(productId) {
-    // 环境未就绪时直接展示引导卡，避免落地页变成一句「商品不存在」
-    if (cloud.isBlocked()) {
-      this.setData({ loading: false, notFound: false, envIssue: cloud.getState() });
-      return;
-    }
-
-    this.setData({ loading: true });
-    try {
-      // fetchGoods 返回 { goods, source, needFixPermission }：
-      // 客户端直连读不到时会自动改由 vpay 云函数以管理端权限代读
-      const res = await vpay.fetchGoods(productId);
-      const g = res.goods;
-      if (!g) {
-        this.setData({ loading: false, notFound: true, envIssue: null });
-        return;
-      }
-
-      // 价格统一走 format.priceOf 归一化：
-      // 直接写 (g.price / 100).toFixed(2) 时，price 缺失或类型不对会渲染成「¥NaN」，
-      // 既不报错也看不出原因。这里改成 —— 无效就不显示金额、并禁止下单。
-      const p = format.priceOf(g.price);
-      if (!p.valid) {
-        console.warn('[goods] price 不合法，原始值 =', p.raw, '类型 =', p.rawType, '原因 =', p.reason);
-      }
+      const min = detail.minimum > 0 ? detail.minimum : 1;
+      const max = detail.maximum > 0 ? detail.maximum : 0;
 
       this.setData({
         loading: false,
-        notFound: false,
-        envIssue: null,
-        goods: g,
-        priceText: p.text,
-        priceInvalid: !p.valid,
-        priceReason: p.valid ? '' : p.reason,
-        perks: buildPerks(g),
-        notice: g.notice || DEFAULT_NOTICE
+        detail: detail,
+        descHtml: format.richText(detail.description),
+        race: race,
+        sku: sku,
+        num: min,
+        min: min,
+        max: max,
+        noCover: !detail.cover || detail.cover.indexOf('favicon') >= 0,
+        priceText: detail.userPriceText,
+        stock: detail.stock,
+        stockText: detail.stockText,
+        canBuy: detail.stock > 0
+      });
+
+      wx.setNavigationBarTitle({ title: detail.name.slice(0, 16) });
+      this.refreshPrice();
+    } catch (e) {
+      this.setData({ loading: false, error: e.message || '商品加载失败' });
+    }
+  },
+
+  /** 组装估价/库存参数（faka 的 sku 是嵌套对象） */
+  buildPayload() {
+    const payload = {
+      item_id: Number(this.id),
+      num: this.data.num
+    };
+    if (this.data.race) payload.race = this.data.race;
+    const sku = this.data.sku || {};
+    if (Object.keys(sku).length) payload.sku = sku;
+    return payload;
+  },
+
+  /** 改数量或规格后重新取价与库存（价格一律以服务端为准） */
+  async refreshPrice() {
+    this.setData({ priceLoading: true });
+    const payload = this.buildPayload();
+    try {
+      const results = await Promise.all([api.valuate(payload), api.getStock(payload)]);
+      const price = results[0];
+      const stock = results[1];
+      this.setData({
+        priceLoading: false,
+        priceText: price.priceText,
+        stock: stock.stock,
+        stockText: stock.stockText,
+        canBuy: !(stock.stockText ? stock.stockText === '已售罄' : stock.stock <= 0)
       });
     } catch (e) {
-      if (e.envIssue) {
-        this.setData({ loading: false, notFound: false, envIssue: cloud.getState() });
-        return;
-      }
-      console.error('[goods] loadGoods', e);
-      this.setData({ loading: false, notFound: true });
-      wx.showToast({ title: e.message || '商品加载失败，请稍后重试', icon: 'none' });
+      // 估价失败时保留商品默认价，但阻断明显无库存的下单
+      this.setData({
+        priceLoading: false,
+        priceText: this.data.priceText,
+        canBuy: false
+      });
+      wx.showToast({ title: e.message || '价格获取失败', icon: 'none' });
     }
   },
 
-  retryEnv() {
-    cloud.init();
-    cloud.resetWarn();
-    if (cloud.isBlocked()) {
-      this.setData({ envIssue: cloud.getState() });
-      wx.showToast({ title: '环境仍不可用', icon: 'none' });
+  selectRace(e) {
+    const name = e.currentTarget.dataset.name;
+    if (name === this.data.race) return;
+    this.setData({ race: name });
+    this.refreshPrice();
+  },
+
+  selectSku(e) {
+    const group = e.currentTarget.dataset.group;
+    const value = e.currentTarget.dataset.value;
+    const sku = Object.assign({}, this.data.sku);
+    if (sku[group] === value) return;
+    sku[group] = value;
+    this.setData({ sku: sku });
+    this.refreshPrice();
+  },
+
+  minus() {
+    const next = Math.max(this.data.min, this.data.num - 1);
+    if (next === this.data.num) return;
+    this.setData({ num: next });
+    this.refreshPrice();
+  },
+
+  plus() {
+    const limit = this.data.max > 0 ? this.data.max : 999;
+    const stockLimit = this.data.stock > 0 ? this.data.stock : limit;
+    const next = Math.min(limit, stockLimit, this.data.num + 1);
+    if (next === this.data.num) {
+      wx.showToast({ title: this.data.max > 0 ? '单次最多 ' + this.data.max + ' 件' : '库存不足', icon: 'none' });
       return;
     }
-    this.setData({ envIssue: null, loading: true });
-    if (this.productId) this.loadGoods(this.productId);
-    else this.init();
+    this.setData({ num: next });
+    this.refreshPrice();
   },
 
-  goSetup() {
-    cloud.goSetup();
+  onNumInput(e) {
+    const raw = Number(e.detail.value);
+    if (!Number.isFinite(raw) || raw <= 0) return;
+    const limit = this.data.max > 0 ? this.data.max : 999;
+    const stockLimit = this.data.stock > 0 ? this.data.stock : limit;
+    const next = Math.min(Math.max(this.data.min, Math.floor(raw)), Math.min(limit, stockLimit));
+    this.setData({ num: next });
+    this.refreshPrice();
   },
 
-  async onBuy() {
-    if (this.data.buying || !this.data.goods) return;
-
-    // 价格不合法时坚决不放行：拿错误的金额去拉起支付，用户就会按错价付款
-    if (this.data.priceInvalid) {
-      if (!this.data.devHints) {
-        // 顾客视角：只说结论，不暴露后台配置细节
-        wx.showModal({
-          title: '该商品暂不可购买',
-          content: '商品信息正在维护中，请稍后再试；如有疑问可点本页底部的「联系客服」。',
-          showCancel: false,
-          confirmText: '知道了'
-        });
-        return;
-      }
+  buy() {
+    const d = this.data.detail;
+    if (!d) return;
+    if (!this.data.canBuy) {
+      wx.showToast({ title: '该规格已售罄', icon: 'none' });
+      return;
+    }
+    if (d.onlyUser && !auth.isLoggedIn()) {
       wx.showModal({
-        title: '商品价格未正确配置',
-        content:
-          '已暂停购买，避免按错误金额扣款。\n\n原因：' +
-          (this.data.priceReason || 'price 字段不合法') +
-          '\n\n请在「数据库 → goods」里把该商品的 price 改成数字类型的整数分（如 990），或在「运行环境自检」页让系统帮你检查一遍。',
-        confirmText: '去自检',
-        cancelText: '知道了',
-        confirmColor: '#059a57',
+        title: '需要登录',
+        content: '该商品仅限登录用户购买，请先完成微信登录。',
+        confirmText: '去登录',
         success: (r) => {
-          if (r.confirm) cloud.goSetup();
+          if (r.confirm) wx.navigateTo({ url: '/pages/login/login' });
         }
       });
       return;
     }
-
-    this.setData({ buying: true });
-
-    // 订阅消息授权（可选）：用户拒绝也不影响发货
-    const tplId = this.data.goods.templateId;
-    if (tplId) {
-      await new Promise((resolve) => wx.requestSubscribeMessage({ tmplIds: [tplId], complete: resolve }));
-    }
-
-    try {
-      const r = await vpay.buy(this.data.goods.productId);
-      if (!r.ok) {
-        if (r.reason === 'env') this.setData({ envIssue: cloud.getState() });
-        if (r.reason === 'config') this.showConfigDialog(r);
-        return;
-      }
-      getApp().globalData.lastOutTradeNo = r.outTradeNo;
-      wx.showToast({ title: '支付成功', icon: 'success' });
-      setTimeout(() => {
-        wx.navigateTo({ url: `/pages/order/order?outTradeNo=${r.outTradeNo}` });
-      }, 600);
-    } catch (e) {
-      wx.showToast({ title: e.message || '购买失败', icon: 'none' });
-    } finally {
-      this.setData({ buying: false });
-    }
+    // 规格与数量通过 globalData 传递，避免把嵌套对象塞进 URL
+    app.globalData.draft = {
+      detail: d,
+      num: this.data.num,
+      race: this.data.race,
+      sku: this.data.sku,
+      priceText: this.data.priceText
+    };
+    wx.navigateTo({ url: '/pages/confirm/confirm?id=' + d.id });
   },
 
-  /**
-   * 配置类失败的完整说明。
-   * 用弹窗而不是 toast：这类文案（缺哪个环境变量、去哪儿填）远超 toast 的可显示长度，
-   * 之前正是因为被截断，才只看到「云函数变量未配置完整」而不知道下一步做什么。
-   */
-  showConfigDialog(r) {
-    const title =
-      r.code === 'ENV_MISSING'
-        ? '云函数环境变量未配置'
-        : r.code === 'PRICE_INVALID'
-          ? '商品价格未正确配置'
-          : '无法下单';
+  gotoHelp() {
+    wx.navigateTo({ url: '/pages/help/help?id=' + this.id });
+  },
 
-    const content =
-      (r.message || '') + (r.hint ? '\n\n' + r.hint : '') + '\n\n点「查看指引」可看到完整的配置步骤。';
+  gotoHome() {
+    wx.switchTab({ url: '/pages/index/index' });
+  },
 
-    wx.showModal({
-      title,
-      content: content.slice(0, 500),
-      confirmText: '查看指引',
-      cancelText: '知道了',
-      confirmColor: '#059a57',
-      success: (res) => {
-        if (res.confirm) cloud.goSetup();
-      }
-    });
+  retry() {
+    this.load();
   },
 
   onShareAppMessage() {
-    const g = this.data.goods;
+    const d = this.data.detail;
     return {
-      title: g ? g.title : '资料小铺',
-      path: `/pages/goods/goods?productId=${encodeURIComponent(this.productId || '')}`
-    };
-  },
-
-  onShareTimeline() {
-    const g = this.data.goods;
-    return {
-      title: g ? g.title : '资料小铺',
-      query: `productId=${encodeURIComponent(this.productId || '')}`
+      title: d ? d.name : '商品详情',
+      path: '/pages/goods/goods?id=' + this.id
     };
   }
 });
-
-/** 把商品配置翻译成用户看得懂的「你将获得」清单 */
-function buildPerks(g) {
-  if (g.deliveryMode === 'pool') {
-    return [
-      { icon: '🎟️', text: '专属兑换码，一人一份，不会与他人重复' },
-      { icon: '🔒', text: '付款后立即分配并锁定，发完即止' },
-      { icon: '🔁', text: '内容永久保存，可随时回小程序重新查看' }
-    ];
-  }
-  return [
-    { icon: '📦', text: '云盘分享链接（长期有效，建议及时转存）' },
-    { icon: '🔑', text: '提取码同步展示，一键复制' },
-    { icon: '🔁', text: '内容永久保存，可随时回小程序重新查看' }
-  ];
-}

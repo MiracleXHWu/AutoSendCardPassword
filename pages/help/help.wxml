@@ -1,0 +1,71 @@
+<!-- pages/help/help.wxml -->
+<view class="helppage">
+  <!-- 查单 -->
+  <view class="pane block">
+    <view class="block-title">查询订单</view>
+    <view class="muted" style="margin-bottom:10px">输入下单时填写的手机号，或完整的 18 位订单号</view>
+    <view class="q-row">
+      <input
+        class="q-input"
+        value="{{keyword}}"
+        placeholder="手机号 / 订单号"
+        placeholder-class="ph"
+        bindinput="onKeyword"
+        confirm-type="search"
+        bindconfirm="search"
+      />
+      <view class="q-btn" bindtap="search">{{searching ? '查询中' : '查询'}}</view>
+    </view>
+    <view wx:if="{{phone}}" class="q-hint" bindtap="usePhone">使用本机手机号 {{phone}} ›</view>
+
+    <view wx:if="{{searched}}" class="q-result">
+      <view wx:if="{{error}}" class="q-error">{{error}}</view>
+      <view wx:elif="{{!result.length}}" class="q-empty">没有查询到相关订单，请核对手机号或订单号</view>
+      <!-- 注意：wx:else 不能与 wx:for 写在同一节点，wx:for 会插入循环层导致 if 链断裂 -->
+      <view wx:else class="q-list">
+        <view
+          class="q-item"
+          wx:for="{{result}}"
+          wx:key="tradeNo"
+          data-no="{{item.tradeNo}}"
+          bindtap="gotoDetail"
+        >
+          <view class="flex1">
+            <view class="q-name ellipsis">{{item.name || '订单 ' + item.tradeNo}}</view>
+            <view class="q-meta">{{item.timeText}} · {{item.tradeNo}}</view>
+          </view>
+          <view class="q-right">
+            <text class="q-amount">¥{{item.amountText}}</text>
+            <text class="q-status {{item.paid ? 'ok' : 'wait'}}">{{item.statusText}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 客服 -->
+  <view class="pane block">
+    <view class="block-title">联系客服</view>
+    <view class="muted" style="line-height:1.8">
+      发货异常、卡密无效、链接失效等问题，请提供订单号，我们会尽快核实处理。
+    </view>
+    <view class="contact-row">
+      <view class="btn ghost" bindtap="contact">联系在线客服</view>
+      <view class="btn ghost" bindtap="gotoOrders">我的订单</view>
+    </view>
+  </view>
+
+  <!-- FAQ -->
+  <view class="pane block">
+    <view class="block-title">常见问题</view>
+    <view class="faq" wx:for="{{faq}}" wx:key="q">
+      <view class="faq-q" data-i="{{index}}" bindtap="toggleFaq">
+        <text class="flex1">{{item.q}}</text>
+        <text class="faq-arrow {{openIndex === index ? 'open' : ''}}">⌄</text>
+      </view>
+      <view wx:if="{{openIndex === index}}" class="faq-a">{{item.a}}</view>
+    </view>
+  </view>
+
+  <view style="height:24px"></view>
+</view>

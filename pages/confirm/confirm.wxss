@@ -1,0 +1,205 @@
+/* pages/confirm/confirm.wxss */
+.confirmpage {
+  min-height: 100vh;
+  background: #f5f6f8;
+  padding: 10px 0 0;
+}
+
+.block {
+  margin: 0 16px 10px;
+  padding: 14px;
+}
+
+.block-title {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: #101828;
+  margin-bottom: 12px;
+}
+
+.goods {
+  display: flex;
+  gap: 12px;
+}
+
+.thumb {
+  width: 70px;
+  height: 70px;
+  flex: 0 0 70px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #e9f6ef, #d5eee2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.thumb-img {
+  width: 100%;
+  height: 100%;
+}
+
+.thumb-initial {
+  font-size: 26px;
+  font-weight: 700;
+  color: rgba(16, 24, 40, 0.16);
+}
+
+.gname {
+  font-size: 13.5px;
+  line-height: 1.45;
+  color: #101828;
+}
+
+.gsku {
+  font-size: 11.5px;
+  color: #98a2b3;
+  margin-top: 4px;
+}
+
+/* 表单 */
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.field-label {
+  font-size: 12.5px;
+  color: #667085;
+}
+
+.req {
+  color: #f04438;
+  margin-left: 2px;
+}
+
+.field-input {
+  height: 40px;
+  background: #f7f8fa;
+  border-radius: 9px;
+  padding: 0 12px;
+  font-size: 13.5px;
+  color: #101828;
+}
+
+.field-textarea {
+  background: #f7f8fa;
+  border-radius: 9px;
+  padding: 10px 12px;
+  font-size: 13.5px;
+  color: #101828;
+  min-height: 70px;
+  width: 100%;
+}
+
+.ph {
+  color: #b0b8c4;
+  font-size: 13px;
+}
+
+.hint {
+  font-size: 11px;
+  color: #98a2b3;
+  margin-top: 8px;
+}
+
+/* 支付方式 */
+.pay-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 12px;
+  border: 1px solid #eef0f3;
+  border-radius: 10px;
+  margin-bottom: 8px;
+}
+
+.pay-item.on {
+  border-color: #12b76a;
+  background: #f6fdf9;
+}
+
+.pay-icon {
+  width: 22px;
+  height: 22px;
+  flex: 0 0 22px;
+}
+
+.pay-icon-blank {
+  border-radius: 5px;
+  background: #e4e7ec;
+}
+
+.pay-name {
+  font-size: 13px;
+  color: #344054;
+  flex: 1;
+}
+
+.radio {
+  width: 17px;
+  height: 17px;
+  border-radius: 50%;
+  border: 1.5px solid #d0d5dd;
+  flex: 0 0 17px;
+  position: relative;
+}
+
+.radio.on {
+  border-color: #12b76a;
+}
+
+.radio.on::after {
+  content: '';
+  position: absolute;
+  inset: 3px;
+  border-radius: 50%;
+  background: #12b76a;
+}
+
+/* 验证码 */
+.captcha-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.captcha {
+  width: 96px;
+  height: 40px;
+  flex: 0 0 96px;
+  border-radius: 8px;
+  background: #f2f4f7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11.5px;
+  color: #98a2b3;
+}
+
+/* 底部 */
+.total {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.submit {
+  width: 150px;
+  height: 46px;
+  border-radius: 12px;
+  background: #12b76a;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 150px;
+}
+
+.submit.disabled {
+  background: #d0d5dd;
+}

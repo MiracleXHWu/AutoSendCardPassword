@@ -1,5 +1,7 @@
 {
-  "usingComponents": {},
-  "navigationBarTitleText": "资料小铺",
-  "enablePullDownRefresh": true
+  "navigationStyle": "custom",
+  "backgroundColor": "#0f2a1d",
+  "backgroundTextStyle": "light",
+  "enablePullDownRefresh": true,
+  "usingComponents": {}
 }

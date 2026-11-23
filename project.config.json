@@ -1,33 +1,77 @@
 {
-	"setting": {
-		"es6": true,
-		"postcss": true,
-		"minified": true,
-		"uglifyFileName": false,
-		"enhance": true,
-		"packNpmRelationList": [],
-		"babelSetting": {
-			"ignore": [],
-			"disablePlugins": [],
-			"outputPath": ""
-		},
-		"useCompilerPlugins": false,
-		"compileWorklet": false,
-		"uploadWithSourceMap": true,
-		"packNpmManually": false,
-		"minifyWXSS": true,
-		"minifyWXML": true,
-		"localPlugins": false,
-		"disableUseStrict": false,
-		"condition": false
-	},
-	"compileType": "miniprogram",
-	"cloudfunctionRoot": "cloudfunctions/",
-	"simulatorPluginLibVersion": {},
-	"packOptions": {
-		"ignore": [],
-		"include": []
-	},
-	"appid": "wx6418d1284fb3e3c8",
-	"editorSetting": {}
+  "description": "小程序前端工程配置（纯 API，无云函数）",
+  "packOptions": {
+    "ignore": [
+      { "type": "folder", "value": "design" },
+      { "type": "folder", "value": "tests" }
+    ],
+    "include": []
+  },
+  "setting": {
+    "urlCheck": true,
+    "es6": true,
+    "enhance": true,
+    "postcss": true,
+    "preloadBackgroundData": false,
+    "minified": true,
+    "newFeature": true,
+    "coverView": true,
+    "nodeModules": false,
+    "autoAudits": false,
+    "showShadowRootInWxmlPanel": true,
+    "scopeDataCheck": false,
+    "uglifyFileName": false,
+    "checkInvalidKey": true,
+    "checkSiteMap": true,
+    "uploadWithSourceMap": true,
+    "compileHotReLoad": false,
+    "lazyloadPlaceholderEnable": false,
+    "useMultiFrameRuntime": true,
+    "useApiHook": true,
+    "useApiHostProcess": true,
+    "babelSetting": {
+      "ignore": [],
+      "disablePlugins": [],
+      "outputPath": ""
+    },
+    "enableEngineNative": false,
+    "useIsolateContext": true,
+    "userConfirmedBundleSwitch": false,
+    "packNpmManually": false,
+    "packNpmRelationList": [],
+    "minifyWXSS": true,
+    "disableUseStrict": false,
+    "minifyWXML": true,
+    "showES6CompileOption": false,
+    "useCompilerPlugins": false,
+    "ignoreUploadUnusedFiles": true
+  },
+  "compileType": "miniprogram",
+  "libVersion": "3.17.4",
+  "appid": "wx6418d1284fb3e3c8",
+  "projectname": "wx-auto-deliver",
+  "condition": {
+    "miniprogram": {
+      "list": [
+        {
+          "name": "首页",
+          "pathName": "pages/index/index",
+          "query": "",
+          "scene": null
+        },
+        {
+          "name": "商品详情-101",
+          "pathName": "pages/goods/goods",
+          "query": "id=101",
+          "scene": null
+        },
+        {
+          "name": "订单列表",
+          "pathName": "pages/orders/orders",
+          "query": "",
+          "scene": null
+        }
+      ]
+    }
+  }
 }

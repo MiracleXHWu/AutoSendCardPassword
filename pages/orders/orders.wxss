@@ -1,80 +1,187 @@
 /* pages/orders/orders.wxss */
+.orderspage {
+  min-height: 100vh;
+  background: #f5f6f8;
+  padding-bottom: 0;
+}
 
-/* 自定义 tabBar 占位 */
-.wrap {
-  padding-bottom: 240rpx;
+/* 头部 */
+.head {
+  background: #fff;
+  padding: 14px 16px 12px;
+}
+
+.stats {
+  display: flex;
+  align-items: center;
+}
+
+.stat {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.stat .n {
+  font-size: 19px;
+  font-weight: 700;
+  color: #101828;
+}
+
+.stat .n.amber {
+  color: #f79009;
+}
+
+.stat .n.green {
+  color: #12b76a;
+}
+
+.stat .l {
+  font-size: 10.5px;
+  color: #98a2b3;
+  margin-top: 3px;
+}
+
+.query-entry {
+  margin-top: 12px;
+  text-align: center;
+  font-size: 11.5px;
+  color: #12b76a;
+  background: #f2fbf7;
+  border-radius: 9px;
+  padding: 9px;
+}
+
+/* 筛选 */
+.tabs {
+  display: flex;
+  background: #fff;
+  padding: 0 16px;
+  border-bottom: 1px solid #f2f4f7;
+  position: sticky;
+  top: 0;
+  z-index: 5;
+}
+
+.tab {
+  flex: 1;
+  text-align: center;
+  font-size: 13px;
+  color: #667085;
+  padding: 12px 0 11px;
+  position: relative;
+}
+
+.tab.on {
+  color: #101828;
+  font-weight: 600;
+}
+
+.tab.on::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  transform: translateX(-50%);
+  width: 22px;
+  height: 2.5px;
+  border-radius: 2px;
+  background: #12b76a;
+}
+
+/* 列表 */
+.list {
+  padding: 12px 16px 0;
 }
 
 .ocard {
   background: #fff;
-  border-radius: var(--radius);
-  padding: 30rpx;
-  margin-bottom: 24rpx;
-  box-shadow: var(--shadow);
+  border-radius: 13px;
+  padding: 12px 13px;
+  margin-bottom: 11px;
+  box-shadow: 0 1px 2px rgba(16, 24, 40, 0.05);
 }
 
-.ocard-top {
+.ocard-head {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  font-size: 11px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #f4f6f8;
 }
 
-.ocard-name {
-  flex: 1;
-  min-width: 0;
-  margin-right: 18rpx;
-  font-size: 31rpx;
+.status {
+  font-size: 11px;
   font-weight: 600;
-  line-height: 1.45;
-  color: var(--ink);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
 }
 
-.ocard-time {
-  margin-top: 12rpx;
+.status.ok {
+  color: #12b76a;
+}
+
+.status.wait {
+  color: #f79009;
+}
+
+.ocard-body {
+  display: flex;
+  gap: 11px;
+  align-items: center;
+  padding: 11px 0;
+}
+
+.thumb {
+  width: 56px;
+  height: 56px;
+  flex: 0 0 56px;
+  border-radius: 9px;
+  background: linear-gradient(135deg, #e9f6ef, #d5eee2);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.thumb-img {
+  width: 100%;
+  height: 100%;
+}
+
+.thumb-initial {
+  font-size: 22px;
+  font-weight: 700;
+  color: rgba(16, 24, 40, 0.16);
+}
+
+.oname {
+  font-size: 13px;
+  line-height: 1.45;
+  color: #101828;
+}
+
+.ometa {
+  font-size: 11px;
+  color: #98a2b3;
+  margin-top: 4px;
+}
+
+.ocard-body .price {
+  font-size: 15px;
+  flex: 0 0 auto;
+  margin-left: 8px;
 }
 
 .ocard-foot {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  padding-top: 10px;
+  border-top: 1px solid #f4f6f8;
 }
 
-.ocard-link {
-  font-size: 25rpx;
-  color: #576b95;
-}
-
-/* 骨架屏 */
-.s-line {
-  height: 28rpx;
-  width: 65%;
-  margin-bottom: 22rpx;
-}
-
-.s-line.short {
-  width: 40%;
-}
-
-.s-price {
-  height: 44rpx;
-  width: 30%;
-}
-
-/* 空态按钮（与首页一致） */
-.empty-btn {
-  display: inline-block;
-  margin-top: 40rpx;
-  padding: 0 52rpx;
-  height: 82rpx;
-  line-height: 82rpx;
-  border-radius: 999rpx;
-  background: linear-gradient(135deg, #14c46f, #059a57);
-  color: #fff;
-  font-size: 28rpx;
-  font-weight: 600;
+.actions {
+  display: flex;
+  gap: 8px;
 }

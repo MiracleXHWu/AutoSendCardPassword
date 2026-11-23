@@ -1,0 +1,81 @@
+<!-- pages/category/category.wxml -->
+<view class="catpage">
+  <view class="searchbar" bindtap="gotoSearch">
+    <view class="srch">
+      <view class="srch-ico"></view>
+      <text>搜索商品</text>
+    </view>
+  </view>
+
+  <view class="split">
+    <!-- 左侧一级类目 -->
+    <scroll-view class="side" scroll-y>
+      <view
+        class="side-item {{activeRoot === item.id ? 'on' : ''}}"
+        wx:for="{{roots}}"
+        wx:key="id"
+        data-id="{{item.id}}"
+        bindtap="selectRoot"
+      >
+        <text>{{item.name}}</text>
+      </view>
+      <view wx:if="{{!roots.length && !loading}}" class="side-empty">暂无分类</view>
+    </scroll-view>
+
+    <!-- 右侧 -->
+    <scroll-view class="main" scroll-y>
+      <view wx:if="{{error}}" class="empty">
+        <view class="big">⚠</view>
+        <view>{{error}}</view>
+        <view class="retry-btn" bindtap="retry">重新加载</view>
+      </view>
+
+      <block wx:else>
+        <view class="main-head">
+          <text class="main-title">{{rootName}}</text>
+          <text class="main-count" wx:if="{{!loading}}">{{goods.length}} 件商品</text>
+        </view>
+
+        <!-- 二级分类 -->
+        <scroll-view wx:if="{{subs.length}}" class="sub-scroll" scroll-x show-scrollbar="{{false}}">
+          <view class="sub-row">
+            <view class="sub {{activeSub === 0 ? 'on' : ''}}" data-id="0" bindtap="selectSub">全部</view>
+            <view
+              class="sub {{activeSub === item.id ? 'on' : ''}}"
+              wx:for="{{subs}}"
+              wx:key="id"
+              data-id="{{item.id}}"
+              bindtap="selectSub"
+            >{{item.name}}</view>
+          </view>
+        </scroll-view>
+
+        <view wx:if="{{loading}}" class="pane skeleton" style="height:180px;margin-top:12px"></view>
+
+        <view wx:elif="{{!goods.length}}" class="empty">
+          <view class="big">📦</view>
+          <view>该类目暂未上架商品</view>
+        </view>
+
+        <view wx:else class="grid">
+          <view class="gcard" wx:for="{{goods}}" wx:key="id" data-id="{{item.id}}" bindtap="gotoGoods">
+            <view class="gcover" style="background:{{item.bg}}">
+              <image wx:if="{{!item.noCover}}" class="gimg" src="{{item.cover}}" mode="aspectFill" lazy-load />
+              <text wx:else class="ginitial">{{item.initial}}</text>
+              <view wx:if="{{item.stock <= 0}}" class="soldout">已售罄</view>
+            </view>
+            <view class="gbody">
+              <view class="gname clamp2">{{item.name}}</view>
+              <view class="gfoot">
+                <view class="price"><text class="unit">¥</text>{{item.userPriceText}}</view>
+                <text class="gsold">已售 {{item.soldText}}</text>
+              </view>
+            </view>
+          </view>
+        </view>
+      </block>
+
+      <view style="height:130rpx"></view>
+    </scroll-view>
+  </view>
+</view>

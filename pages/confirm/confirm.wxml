@@ -1,0 +1,136 @@
+<!-- pages/confirm/confirm.wxml -->
+<view class="confirmpage">
+  <view wx:if="{{loading}}" class="pane" style="margin:16px">
+    <view class="skeleton" style="height:70px"></view>
+    <view class="skeleton" style="height:16px;width:60%;margin-top:14px"></view>
+  </view>
+
+  <view wx:elif="{{error}}" class="empty">
+    <view class="big">⚠</view>
+    <view>{{error}}</view>
+    <view class="btn small ghost" style="display:inline-flex;margin-top:14px" bindtap="retry">重新加载</view>
+  </view>
+
+  <block wx:else>
+    <!-- 商品 -->
+    <view class="pane block">
+      <view class="goods">
+        <view class="thumb">
+          <image wx:if="{{detail.cover && detail.cover.indexOf('favicon') < 0}}" class="thumb-img" src="{{detail.cover}}" mode="aspectFill" />
+          <text wx:else class="thumb-initial">{{detail.name[0]}}</text>
+        </view>
+        <view class="flex1">
+          <view class="gname clamp2">{{detail.name}}</view>
+          <view class="gsku">{{skuText || '默认规格'}} · {{num}} 件</view>
+          <view class="price" style="margin-top:6px"><text class="unit">¥</text>{{detail.userPriceText}}</view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 联系方式 -->
+    <view class="pane block">
+      <view class="field">
+        <view class="field-label">{{contactLabel}}</view>
+        <input
+          class="field-input"
+          value="{{contact}}"
+          placeholder="{{contactPlaceholder}}"
+          placeholder-class="ph"
+          bindinput="onContactInput"
+        />
+      </view>
+      <view class="hint">用于查询订单与售后补发，建议填写手机号</view>
+
+      <view wx:if="{{needPassword}}" class="field" style="margin-top:14px">
+        <view class="field-label">查单密码</view>
+        <input
+          class="field-input"
+          value="{{password}}"
+          password
+          placeholder="至少 6 位，查询卡密时需要"
+          placeholder-class="ph"
+          bindinput="onPasswordInput"
+        />
+      </view>
+    </view>
+
+    <!-- 自定义下单字段 -->
+    <view wx:if="{{widget.length}}" class="pane block">
+      <view class="block-title">填写信息</view>
+      <view class="field" wx:for="{{widget}}" wx:key="name" style="margin-bottom:12px">
+        <view class="field-label">
+          {{item.label}}
+          <text wx:if="{{item.required}}" class="req">*</text>
+        </view>
+        <textarea
+          wx:if="{{item.type === 'textarea'}}"
+          class="field-textarea"
+          value="{{widgetValues[item.name]}}"
+          placeholder="{{item.placeholder || '请填写' + item.label}}"
+          placeholder-class="ph"
+          data-name="{{item.name}}"
+          bindinput="onWidgetInput"
+          auto-height
+        />
+        <input
+          wx:else
+          class="field-input"
+          value="{{widgetValues[item.name]}}"
+          placeholder="{{item.placeholder || '请填写' + item.label}}"
+          placeholder-class="ph"
+          data-name="{{item.name}}"
+          bindinput="onWidgetInput"
+        />
+      </view>
+    </view>
+
+    <!-- 支付方式 -->
+    <view class="pane block">
+      <view class="block-title">支付方式</view>
+      <view wx:if="{{!channels.length}}" class="muted">暂未获取到可用支付方式，请联系客服</view>
+      <view
+        class="pay-item {{payId === item.id ? 'on' : ''}}"
+        wx:for="{{channels}}"
+        wx:key="id"
+        data-id="{{item.id}}"
+        bindtap="selectPay"
+      >
+        <image wx:if="{{item.icon}}" class="pay-icon" src="{{item.icon}}" mode="aspectFit" />
+        <view wx:else class="pay-icon pay-icon-blank"></view>
+        <text class="pay-name">{{item.name}}</text>
+        <view class="radio {{payId === item.id ? 'on' : ''}}"></view>
+      </view>
+    </view>
+
+    <!-- 验证码 -->
+    <view wx:if="{{needCaptcha}}" class="pane block">
+      <view class="field">
+        <view class="field-label">图形验证码</view>
+        <view class="captcha-row">
+          <input
+            class="field-input flex1"
+            value="{{captcha}}"
+            placeholder="请输入验证码"
+            placeholder-class="ph"
+            bindinput="onCaptchaInput"
+          />
+          <image wx:if="{{captchaImg}}" class="captcha" src="{{captchaImg}}" mode="aspectFit" bindtap="refreshCaptcha" />
+          <view wx:else class="captcha captcha-empty" bindtap="refreshCaptcha">点击加载</view>
+        </view>
+      </view>
+    </view>
+
+    <view style="height:150rpx"></view>
+
+    <!-- 底部提交 -->
+    <view class="action-bar">
+      <view class="total">
+        <text class="muted">合计</text>
+        <view class="price" style="font-size:20px"><text class="unit">¥</text>{{totalText || detail.userPriceText}}</view>
+      </view>
+      <view class="submit {{submitting ? 'disabled' : ''}}" bindtap="submit">
+        {{submitting ? '提交中…' : '提交订单'}}
+      </view>
+    </view>
+  </block>
+</view>

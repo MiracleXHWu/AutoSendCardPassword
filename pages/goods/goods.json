@@ -1,5 +1,5 @@
 {
-  "usingComponents": {},
   "navigationBarTitleText": "商品详情",
-  "enablePullDownRefresh": false
+  "backgroundColor": "#f5f6f8",
+  "usingComponents": {}
 }

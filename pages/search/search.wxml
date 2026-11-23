@@ -1,0 +1,93 @@
+<!-- pages/search/search.wxml -->
+<view class="searchpage">
+  <view class="bar">
+    <view class="input-wrap">
+      <view class="srch-ico"></view>
+      <input
+        class="input"
+        value="{{keyword}}"
+        focus="{{focus}}"
+        confirm-type="search"
+        placeholder="搜索商品名称 / 关键词"
+        placeholder-class="ph"
+        bindinput="onInput"
+        bindconfirm="onConfirm"
+      />
+      <view wx:if="{{keyword}}" class="clear" bindtap="clearKeyword">✕</view>
+    </view>
+    <view class="go" bindtap="onConfirm">搜索</view>
+  </view>
+
+  <!-- 未搜索：历史 + 热门 -->
+  <block wx:if="{{!searched}}">
+    <view wx:if="{{history.length}}" class="block">
+      <view class="block-head">
+        <text>搜索历史</text>
+        <text class="clear-all" bindtap="clearHistory">清空</text>
+      </view>
+      <view class="chips">
+        <view class="chip" wx:for="{{history}}" wx:key="*this" data-kw="{{item}}" bindtap="tapHistory">{{item}}</view>
+      </view>
+    </view>
+
+    <view wx:if="{{hot.length}}" class="block">
+      <view class="block-head"><text>热门分类</text></view>
+      <view class="chips">
+        <view class="chip hot" wx:for="{{hot}}" wx:key="*this" data-kw="{{item}}" bindtap="tapHistory">{{item}}</view>
+      </view>
+    </view>
+
+    <view wx:if="{{!history.length && !hot.length}}" class="empty">
+      <view class="big">🔍</view>
+      <view>输入关键词查找商品</view>
+    </view>
+  </block>
+
+  <!-- 结果 -->
+  <block wx:else>
+    <view wx:if="{{loading}}" class="list">
+      <view class="row-card" wx:for="{{[1,2,3]}}" wx:key="*this">
+        <view class="thumb skeleton"></view>
+        <view class="flex1">
+          <view class="skeleton" style="height:14px;width:80%"></view>
+          <view class="skeleton" style="height:14px;width:50%;margin-top:8px"></view>
+          <view class="skeleton" style="height:16px;width:32%;margin-top:14px"></view>
+        </view>
+      </view>
+    </view>
+
+    <view wx:elif="{{error}}" class="empty">
+      <view class="big">⚠</view>
+      <view>{{error}}</view>
+    </view>
+
+    <view wx:elif="{{!list.length}}" class="empty">
+      <view class="big">🫙</view>
+      <view>没有找到「{{keyword}}」相关的商品</view>
+      <view class="muted" style="margin-top:6px">换个关键词试试，或到分类里逐个浏览</view>
+    </view>
+
+    <block wx:else>
+      <view class="result-head">共 {{total}} 个结果</view>
+      <view class="list">
+        <view class="row-card" wx:for="{{list}}" wx:key="id" data-id="{{item.id}}" bindtap="gotoGoods">
+          <view class="thumb" style="background:{{item.bg || '#f2f4f7'}}">
+            <image wx:if="{{!item.noCover}}" class="thumb-img" src="{{item.cover}}" mode="aspectFill" lazy-load />
+            <text wx:else class="thumb-initial">{{item.initial}}</text>
+          </view>
+          <view class="flex1">
+            <view class="row-name clamp2">{{item.name}}</view>
+            <view class="row-tags">
+              <text class="tag" wx:for="{{item.tags}}" wx:for-item="t" wx:key="name" wx:if="{{index < 2}}">{{t.name}}</text>
+              <text wx:if="{{!item.tags.length}}" class="tag gray">{{item.stock > 0 ? '库存 ' + item.stock : '已售罄'}}</text>
+            </view>
+            <view class="row-foot">
+              <view class="price"><text class="unit">¥</text>{{item.userPriceText}}</view>
+              <text class="row-sold">已售 {{item.soldText}}</text>
+            </view>
+          </view>
+        </view>
+      </view>
+    </block>
+  </block>
+</view>

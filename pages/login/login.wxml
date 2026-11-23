@@ -1,0 +1,70 @@
+<!-- pages/login/login.wxml -->
+<view class="loginpage">
+  <view class="top">
+    <view class="logo">
+      <text class="logo-text">{{appName[0]}}</text>
+    </view>
+    <view class="title">{{appName}}</view>
+    <view class="sub">付款后自动发货 · 全程自助</view>
+  </view>
+
+  <view class="body">
+    <!-- 状态卡 -->
+    <view class="status-card">
+      <block wx:if="{{status === 'loading'}}">
+        <view class="dot loading"></view>
+        <view class="flex1">
+          <view class="st-title">正在登录…</view>
+          <view class="st-sub">使用微信身份静默认证，无需授权弹窗</view>
+        </view>
+      </block>
+
+      <block wx:elif="{{status === 'ok'}}">
+        <view class="dot ok">✓</view>
+        <view class="flex1">
+          <view class="st-title">已登录</view>
+          <view class="st-sub">{{message}}</view>
+        </view>
+      </block>
+
+      <block wx:elif="{{status === 'guest'}}">
+        <view class="dot warn">!</view>
+        <view class="flex1">
+          <view class="st-title">当前为游客模式</view>
+          <view class="st-sub">{{message}}</view>
+        </view>
+      </block>
+
+      <block wx:else>
+        <view class="dot err">×</view>
+        <view class="flex1">
+          <view class="st-title">登录失败</view>
+          <view class="st-sub">{{message}}</view>
+        </view>
+      </block>
+    </view>
+
+    <!-- 手机号 -->
+    <view class="phone-card" bindtap="editPhone">
+      <view class="flex1">
+        <view class="pc-label">手机号（选填）</view>
+        <view class="pc-value">{{phoneMasked || '未填写'}}</view>
+      </view>
+      <text class="pc-arrow">›</text>
+    </view>
+
+    <view class="note">
+      <view class="note-item">· 登录仅用于身份识别，不会获取你的头像与昵称以外的信息</view>
+      <view class="note-item">· 手机号用于换设备后按号码找回订单，可随时留空</view>
+      <view class="note-item">· 游客模式下同样可以下单与查单</view>
+    </view>
+
+    <view class="actions">
+      <view wx:if="{{status === 'ok' || status === 'guest'}}" class="btn" bindtap="done">进入店铺</view>
+      <view wx:elif="{{status === 'loading'}}" class="btn disabled">请稍候…</view>
+      <view wx:else class="btn" bindtap="retry">重新登录</view>
+
+      <view wx:if="{{status !== 'guest'}}" class="ghost-link" bindtap="continueAsGuest">先随便逛逛</view>
+    </view>
+  </view>
+</view>

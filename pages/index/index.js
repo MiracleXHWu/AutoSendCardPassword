@@ -1,158 +1,179 @@
-// pages/index/index.js —— 商品列表（店铺首页）
-const vpay = require('../../utils/vpay.js');
-const cloud = require('../../utils/cloud.js');
+// pages/index/index.js —— 首页：搜索入口 + 分类快捷 + 商品流
+const api = require('../../services/api.js');
 const format = require('../../utils/format.js');
+const config = require('../../config.js');
+
+// 用安全访问层替代模块顶层 getApp()：热重载/独立上下文下 App 可能尚未就绪
+const app = require('../../utils/app.js');
+
+/** 无封面时按商品 id 取一个稳定的渐变色，避免列表一片空白 */
+const COVER_COLORS = [
+  'linear-gradient(135deg,#d9f2e5,#b7e8cf)',
+  'linear-gradient(135deg,#e6e9ff,#cdd4fb)',
+  'linear-gradient(135deg,#fdeedd,#fbd9bc)',
+  'linear-gradient(135deg,#e4f4fb,#c4e6f5)',
+  'linear-gradient(135deg,#fbe6ef,#f6ccdd)'
+];
 
 Page({
   data: {
+    appName: config.appName,
+    statusBar: 20,
     loading: true,
-    failed: false,
-    envIssue: null,
+    error: '',
+    categories: [],
+    // 当前选中的分类：统一用字符串比较（'0' = 全部，'recommend' = 推荐）
+    activeKey: '0',
     goods: [],
-    // 开发者提示：goods 读权限未开放（数据已由云函数代读，功能正常）
-    permWarn: false,
-    // 开发者提示：有商品价格不合法（页面会显示「¥—」且不可购买）
-    cfgWarn: false,
-    cfgWarnIds: '',
-    // 空态文案：按「真没数据」/「读取通道没打通」分别给不同指引
-    emptyTitle: '',
-    emptyDesc: '',
-    emptyBtn: '刷新一下'
+    page: 1,
+    hasMore: true,
+    loadingMore: false
   },
 
-  onLoad(query) {
-    // 兼容「把首页配成扫码落地页」的情况：带参时直接转发到商品详情页
-    const productId = (query && (query.productId || query.pid)) || '';
-    const scene = query && query.scene ? decodeURIComponent(query.scene) : '';
-    if (productId || scene) {
-      const qs = productId
-        ? `productId=${encodeURIComponent(productId)}`
-        : `scene=${encodeURIComponent(scene)}`;
-      wx.navigateTo({ url: `/pages/goods/goods?${qs}` });
-      return;
+  onLoad() {
+    try {
+      const info = wx.getWindowInfo ? wx.getWindowInfo() : wx.getSystemInfoSync();
+      this.setData({ statusBar: info.statusBarHeight || 20 });
+    } catch (e) {
+      /* 取不到就用默认值 */
     }
-    this.loadGoods();
+    this.loadAll();
   },
 
   onShow() {
-    // 同步自定义 tabBar 的选中态
     if (typeof this.getTabBar === 'function' && this.getTabBar()) {
-      this.getTabBar().setData({ selected: 0 });
+      this.getTabBar().setSelected(0);
     }
-    // 首次加载由 onLoad 负责；返回本页时做一次静默刷新，避免闪烁骨架屏
-    if (this.loadedOnce) this.loadGoods(true);
   },
 
   onPullDownRefresh() {
-    this.loadGoods().then(() => wx.stopPullDownRefresh());
+    this.loadAll(true).then(() => wx.stopPullDownRefresh());
   },
 
-  async loadGoods(silent) {
-    // 环境已熔断：直接展示引导卡片，不再反复发请求（此前会持续刷屏 -501000）
-    if (cloud.isBlocked()) {
-      this.loadedOnce = true;
-      this.setData({ loading: false, failed: false, envIssue: cloud.getState(), goods: [] });
+  onReachBottom() {
+    this.loadMore();
+  },
+
+  /** 分类与首屏商品并行加载（互不阻塞：任一失败都不影响另一块渲染） */
+  async loadAll(force) {
+    this.setData({ loading: true, error: '' });
+
+    const settled = await Promise.all([
+      app.prefetchCategories(force).then(
+        (v) => ({ ok: true, v }),
+        (e) => ({ ok: false, e })
+      ),
+      this.fetchGoods(1).then(
+        (v) => ({ ok: true, v }),
+        (e) => ({ ok: false, e })
+      )
+    ]);
+
+    const catRes = settled[0];
+    const goodsRes = settled[1];
+
+    // 分类失败时沿用上一次的展平表，至少保留「全部」入口
+    const flat = catRes.ok && catRes.v && Array.isArray(catRes.v.flat) ? catRes.v.flat : this.catFlat || [];
+    this.catFlat = flat;
+    const categories = flat
+      .filter((c) => c.level === 0)
+      .slice(0, 10)
+      .map((c) => ({ id: c.id, key: String(c.id), name: c.name }));
+
+    if (!goodsRes.ok) {
+      const msg = (goodsRes.e && goodsRes.e.message) || '商品加载失败，请下拉刷新';
+      this.setData({ loading: false, categories, error: msg });
       return;
     }
 
-    if (!silent) this.setData({ loading: true, failed: false, envIssue: null });
+    const res = goodsRes.v || { list: [], hasMore: false };
+    this.setData({
+      categories: categories,
+      goods: this.decorate(res.list),
+      page: 1,
+      hasMore: !!res.hasMore,
+      loading: false,
+      error: ''
+    });
+  },
 
-    try {
-      const res = await vpay.fetchGoodsList();
-      // 价格一律经 format.priceOf 归一化：直接写 (it.price / 100).toFixed(2)，
-      // price 缺失或类型不对时会渲染成「¥NaN」，既不报错也看不出是哪条记录的问题。
-      const badIds = [];
-      const goods = res.list.map((it) => {
-        const p = format.priceOf(it.price);
-        if (!p.valid) badIds.push(it.productId || it._id || '(未知)');
-        return {
-          ...it,
-          icon: it.icon || '📦',
-          priceText: p.text,
-          priceBad: !p.valid
-        };
+  fetchGoods(page) {
+    const key = String(this.data.activeKey || '0');
+    const opts = { page: page, limit: config.pageSize, flat: this.catFlat || [] };
+    // '0' 表示全部；其余按分类取（含 'recommend' 这种虚拟分类）
+    if (key === '0') return api.getCommodities(opts);
+    return api.getCommoditiesByCategory(key, opts);
+  },
+
+  /** 补上渐变底色、封面是否可用等展示字段 */
+  decorate(list) {
+    return (list || []).map((g, i) => {
+      const noCover = !g.cover || g.cover.indexOf('favicon') >= 0;
+      return Object.assign({}, g, {
+        bg: COVER_COLORS[(g.id || i) % COVER_COLORS.length],
+        noCover: noCover,
+        initial: (g.name || '?').slice(0, 1),
+        stockLabel: g.stockText || (g.stock > 0 ? '库存 ' + g.stock : '已售罄'),
+        soldText: format.sold(g.sold)
       });
-      if (badIds.length) {
-        console.warn('[index] 以下商品价格不合法，页面显示为「¥—」且不可购买：', badIds.join('、'));
-      }
+    });
+  },
 
-      this.loadedOnce = true;
+  async loadMore() {
+    if (this.data.loadingMore || !this.data.hasMore) return;
+    this.setData({ loadingMore: true });
+    try {
+      const next = this.data.page + 1;
+      const res = await this.fetchGoods(next);
       this.setData({
-        loading: false,
-        failed: false,
-        envIssue: null,
-        goods,
-        // 只在开发者工具/体验版提示后台配置问题，正式版顾客看不到这些字
-        permWarn: res.needFixPermission && cloud.showDevHints(),
-        cfgWarn: badIds.length > 0 && cloud.showDevHints(),
-        cfgWarnIds: badIds.join('、'),
-        ...this.emptyCopy(res)
+        goods: this.data.goods.concat(this.decorate(res.list)),
+        page: next,
+        hasMore: res.hasMore,
+        loadingMore: false
       });
     } catch (e) {
-      this.loadedOnce = true;
-
-      // 环境类错误：用可操作的引导卡片替代「加载失败」，并给出下一步
-      if (e.envIssue) {
-        this.setData({ loading: false, failed: false, envIssue: cloud.getState(), goods: [] });
-        return;
-      }
-      if (!silent) {
-        this.setData({ loading: false, failed: true });
-        wx.showToast({ title: e.message || '加载失败', icon: 'none' });
-      }
+      this.setData({ loadingMore: false });
+      wx.showToast({ title: e.message || '加载失败', icon: 'none' });
     }
   },
 
-  /**
-   * 空态文案。
-   * 两种情况的处理方式完全不同，必须分开说，否则用户会一直重复「刷新一下」：
-   *   ① 兜底通道可用且返回 0 条 → 数据库真的是空的，去跑 initdb；
-   *   ② 兜底通道不可用（vpay 未重新部署）→ 无法判断是空还是权限被拦，
-   *      把「重新部署 vpay」和「开放 goods 读权限」两条路都摆出来。
-   */
-  emptyCopy(res) {
-    if (res.list.length) return { emptyTitle: '', emptyDesc: '', emptyBtn: '刷新一下' };
-
-    if (!res.serverFallback) {
-      return {
-        emptyTitle: '商品读取通道还没打通',
-        emptyDesc:
-          (res.serverReason ? '云函数代读失败：' + res.serverReason + '。\n' : '') +
-          '请任选其一：\n' +
-          '① 右键 cloudfunctions/vpay →「上传并部署：云端安装依赖」，让云函数代读生效（推荐）；\n' +
-          '② 或在云开发控制台把 goods 集合权限设为「所有用户可读，仅管理端可写」。',
-        emptyBtn: '重新检测'
-      };
-    }
-
-    return {
-      emptyTitle: '还没有上架的商品',
-      emptyDesc:
-        'goods 集合已能正常读取，但里面没有已上架的商品。请到「运行环境自检」页点一次「一键初始化数据库」写入示例商品，或自行往 goods 集合添加记录。',
-      emptyBtn: '刷新一下'
-    };
+  switchCat(e) {
+    const raw = e.currentTarget.dataset.key;
+    const key = raw == null || raw === '' ? '0' : String(raw);
+    if (key === String(this.data.activeKey)) return;
+    this.setData({ activeKey: key, loading: true, goods: [], error: '', page: 1, hasMore: true });
+    this.fetchGoods(1)
+      .then((res) => {
+        this.setData({
+          goods: this.decorate(res.list),
+          page: 1,
+          hasMore: res.hasMore,
+          loading: false
+        });
+      })
+      .catch((e) => {
+        this.setData({ loading: false, error: e.message || '加载失败' });
+      });
   },
 
-  /** 配置改完后无需重启工具，点一下即可重新自检 */
-  retryEnv() {
-    cloud.init();
-    cloud.resetWarn();
-    if (cloud.isBlocked()) {
-      this.setData({ envIssue: cloud.getState() });
-      wx.showToast({ title: '环境仍不可用', icon: 'none' });
-      return;
-    }
-    this.setData({ envIssue: null, loading: true });
-    this.loadGoods();
+  retry() {
+    this.loadAll(true);
   },
 
-  goSetup() {
-    cloud.goSetup();
+  gotoSearch() {
+    wx.navigateTo({ url: '/pages/search/search' });
   },
 
-  goDetail(e) {
-    const { pid } = e.currentTarget.dataset;
-    if (!pid) return;
-    wx.navigateTo({ url: `/pages/goods/goods?productId=${encodeURIComponent(pid)}` });
+  gotoCategory() {
+    wx.switchTab({ url: '/pages/category/category' });
+  },
+
+  gotoGoods(e) {
+    const id = e.currentTarget.dataset.id;
+    wx.navigateTo({ url: '/pages/goods/goods?id=' + id });
+  },
+
+  onShareAppMessage() {
+    return { title: config.appName, path: '/pages/index/index' };
   }
 });

@@ -25,6 +25,8 @@ App({
   },
 
   onLaunch() {
+    this.checkApiBase();
+
     this.globalData.authReady = auth
       .silentLogin()
       .then((r) => {
@@ -44,6 +46,20 @@ App({
       });
 
     this.prefetchCategories();
+  },
+
+  /* ------------------------------------------------------------------ */
+  /* 启动自检：真机只接受 HTTPS 的 request 合法域名                        */
+  /* ------------------------------------------------------------------ */
+  checkApiBase() {
+    const base = config.apiBase || '';
+    if (/^http:\/\//i.test(base)) {
+      console.warn(
+        '[config] apiBase 为 HTTP：' + base +
+          '\n微信真机不允许访问 HTTP 接口，即使已在后台添加域名也会失败；' +
+          '请为站点配置有效 HTTPS 证书后改为 https://'
+      );
+    }
   },
 
   /* ------------------------------------------------------------------ */

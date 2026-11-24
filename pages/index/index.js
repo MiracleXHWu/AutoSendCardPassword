@@ -164,10 +164,6 @@ Page({
     wx.navigateTo({ url: '/pages/search/search' });
   },
 
-  gotoCategory() {
-    wx.switchTab({ url: '/pages/category/category' });
-  },
-
   gotoGoods(e) {
     const id = e.currentTarget.dataset.id;
     wx.navigateTo({ url: '/pages/goods/goods?id=' + id });

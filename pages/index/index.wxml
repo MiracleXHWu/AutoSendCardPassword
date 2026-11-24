@@ -3,11 +3,10 @@
   <!-- 顶部：搜索 + 分类快捷 -->
   <view class="hero" style="padding-top:{{statusBar + 10}}px">
     <view class="hero-top">
-      <view>
+      <view class="hero-title">
         <view class="brand">{{appName}}</view>
         <view class="slogan">付款即刻自动发货 · 全程自助</view>
       </view>
-      <view class="cat-entry" bindtap="gotoCategory">全部分类 ›</view>
     </view>
 
     <view class="srch" bindtap="gotoSearch">

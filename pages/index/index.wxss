@@ -15,8 +15,15 @@
 .hero-top {
   display: flex;
   align-items: flex-start;
-  justify-content: space-between;
   padding-top: 6px;
+  /* 右侧预留胶囊按钮（三个点 + 退出）安全区，避免真机遮挡 */
+  padding-right: 96px;
+  box-sizing: border-box;
+}
+
+.hero-title {
+  min-width: 0;
+  flex: 1;
 }
 
 .brand {
@@ -30,15 +37,6 @@
   color: #8fb3a2;
   font-size: 11.5px;
   margin-top: 5px;
-}
-
-.cat-entry {
-  color: #c8e6d6;
-  font-size: 12px;
-  border: 1px solid rgba(200, 230, 214, 0.28);
-  border-radius: 999px;
-  padding: 5px 11px;
-  margin-top: 2px;
 }
 
 .srch {

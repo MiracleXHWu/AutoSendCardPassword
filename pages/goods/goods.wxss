@@ -1,14 +1,14 @@
 /* pages/goods/goods.wxss */
 .goodspage {
   min-height: 100vh;
-  background: #f5f6f8;
+  background: #faf6f0;
   padding-bottom: 0;
 }
 
 /* 封面 */
 .cover {
   height: 300px;
-  background: linear-gradient(135deg, #e9f6ef, #d5eee2);
+  background: linear-gradient(135deg, #f7f1e7, #ece0cd);
   position: relative;
   overflow: hidden;
 }

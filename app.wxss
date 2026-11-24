@@ -12,8 +12,23 @@ page {
   --line: #eceff3;
   --red: #f04438;
   --amber: #f79009;
-  background: #f5f6f8;
-  color: #101828;
+
+  /* ---- 浅色暖砂主题（方案 C） ---- */
+  --paper: #faf6f0;
+  --brand: #c07b3a;
+  --brand-d: #a3672a;
+  --brand-l: #fbf0e1;
+  --ink: #3a2c1c;
+  --ink-sub: #8a7458;
+  --ink-dim: #b9a894;
+
+  /* ---- 全铺满头部（首页/分类/订单/我的 共用，改这里全站生效） ---- */
+  --hero-grad: linear-gradient(168deg, #fdf9f3 0%, #f5ead9 100%);
+  --hero-radius: 22px;
+  --hero-line: #e8d8bf;
+
+  background: var(--paper);
+  color: var(--ink);
   font-size: 14px;
   font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Helvetica Neue', sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -56,6 +71,92 @@ image {
   min-width: 0;
 }
 
+/* ---------- 全铺满页面骨架（自定义导航） ---------- */
+/**
+ * 用法：
+ *   <view class="screen">
+ *     <view class="screen-hero" style="padding-top:{{statusBar}}px">
+ *       <view class="nav-row" style="height:{{navH}}px;padding-right:{{capsuleGap}}px">
+ *         <text class="nav-title">标题</text>
+ *       </view>
+ *       ...
+ *     </view>
+ *   </view>
+ * statusBar / navH / capsuleGap 由 utils/nav.js 注入，不要各页手写常量。
+ */
+.screen {
+  min-height: 100vh;
+  background: var(--paper);
+}
+
+.screen-hero {
+  background: var(--hero-grad);
+  padding: 0 18px 18px;
+  border-radius: 0 0 var(--hero-radius) var(--hero-radius);
+}
+
+.nav-row {
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+}
+
+.nav-title {
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--ink);
+  line-height: 1.2;
+}
+
+.nav-sub {
+  margin-left: auto;
+  font-size: 11.5px;
+  color: var(--ink-sub);
+}
+
+/* 半透明玻璃面板：搜索框、统计、手机号行共用 */
+.glass {
+  background: rgba(255, 255, 255, 0.62);
+  border: 1px solid rgba(255, 255, 255, 0.78);
+  border-radius: 12px;
+}
+
+/* 搜索胶囊：首页与分类页共用 */
+.search-pill {
+  height: 38px;
+  border-radius: 19px;
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid var(--hero-line);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 14px;
+}
+
+.search-pill-ico {
+  width: 14px;
+  height: 14px;
+  flex: 0 0 auto;
+  border: 1.6px solid #a08a6d;
+  border-radius: 50%;
+  position: relative;
+}
+.search-pill-ico::after {
+  content: '';
+  position: absolute;
+  right: -3px;
+  bottom: -2px;
+  width: 6px;
+  height: 1.6px;
+  background: #a08a6d;
+  transform: rotate(45deg);
+}
+
+.search-pill-txt {
+  color: #a08a6d;
+  font-size: 12.5px;
+}
+
 .hr {
   height: 1px;
   background: var(--line);
@@ -79,7 +180,7 @@ image {
 .sect {
   font-size: 14px;
   font-weight: 600;
-  color: var(--txt);
+  color: var(--ink);
   margin: 18px 0 10px;
   display: flex;
   align-items: center;
@@ -186,8 +287,8 @@ image {
 .tag {
   display: inline-block;
   font-size: 10px;
-  color: var(--green-d);
-  background: var(--green-l);
+  color: var(--brand-d);
+  background: var(--brand-l);
   border-radius: 4px;
   padding: 1px 5px;
   margin-right: 4px;

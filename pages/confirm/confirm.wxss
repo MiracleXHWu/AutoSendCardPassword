@@ -1,7 +1,7 @@
 /* pages/confirm/confirm.wxss */
 .confirmpage {
   min-height: 100vh;
-  background: #f5f6f8;
+  background: #faf6f0;
   padding: 10px 0 0;
 }
 
@@ -27,7 +27,7 @@
   height: 70px;
   flex: 0 0 70px;
   border-radius: 10px;
-  background: linear-gradient(135deg, #e9f6ef, #d5eee2);
+  background: linear-gradient(135deg, #f7f1e7, #ece0cd);
   display: flex;
   align-items: center;
   justify-content: center;

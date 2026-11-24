@@ -3,21 +3,14 @@
   padding-bottom: 0;
 }
 
-/* ---------- Hero ---------- */
-.hero {
-  background: linear-gradient(168deg, #0f2a1d 0%, #0b1a14 100%);
-  padding-left: 18px;
-  padding-right: 18px;
-  padding-bottom: 18px;
-  border-radius: 0 0 22px 22px;
-}
-
+/* ---------- Hero ----------
+ * 渐变底、圆角、左右内边距统一由 app.wxss 的 .screen-hero 提供，
+ * 这里只保留首页特有的文字与统计排版。
+ */
 .hero-top {
   display: flex;
   align-items: flex-start;
-  padding-top: 6px;
-  /* 右侧预留胶囊按钮（三个点 + 退出）安全区，避免真机遮挡 */
-  padding-right: 96px;
+  padding-top: 10px;
   box-sizing: border-box;
 }
 
@@ -27,59 +20,22 @@
 }
 
 .brand {
-  color: #fff;
+  color: #3a2c1c;
   font-size: 21px;
   font-weight: 700;
   letter-spacing: 0.2px;
 }
 
 .slogan {
-  color: #8fb3a2;
+  color: #8a7458;
   font-size: 11.5px;
   margin-top: 5px;
-}
-
-.srch {
-  margin-top: 16px;
-  height: 38px;
-  border-radius: 19px;
-  background: rgba(255, 255, 255, 0.12);
-  display: flex;
-  align-items: center;
-  padding: 0 14px;
-  gap: 8px;
-}
-
-.srch-ico {
-  width: 14px;
-  height: 14px;
-  border: 1.6px solid #9fc4b2;
-  border-radius: 50%;
-  position: relative;
-  flex: 0 0 auto;
-}
-.srch-ico::after {
-  content: '';
-  position: absolute;
-  right: -3px;
-  bottom: -2px;
-  width: 6px;
-  height: 1.6px;
-  background: #9fc4b2;
-  transform: rotate(45deg);
-}
-
-.srch-txt {
-  color: #9fc4b2;
-  font-size: 12.5px;
 }
 
 .hero-stats {
   margin-top: 16px;
   display: flex;
   align-items: center;
-  background: rgba(255, 255, 255, 0.06);
-  border-radius: 12px;
   padding: 10px 0;
 }
 
@@ -91,13 +47,13 @@
 }
 
 .hs-n {
-  color: #fff;
+  color: #3a2c1c;
   font-size: 15px;
   font-weight: 700;
 }
 
 .hs-l {
-  color: #7fa290;
+  color: #8a7458;
   font-size: 10.5px;
   margin-top: 2px;
 }
@@ -105,7 +61,7 @@
 .hs-line {
   width: 1px;
   height: 22px;
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(58, 44, 28, 0.12);
 }
 
 /* ---------- 分类 ---------- */
@@ -123,18 +79,18 @@
 .cat {
   flex: 0 0 auto;
   font-size: 12.5px;
-  color: #475467;
+  color: #8a7458;
   background: #fff;
-  border: 1px solid #e4e7ec;
+  border: 1px solid rgba(58, 44, 28, 0.12);
   padding: 6px 14px;
   border-radius: 999px;
   line-height: 1.2;
 }
 
 .cat.on {
-  background: #101828;
+  background: #c07b3a;
   color: #fff;
-  border-color: #101828;
+  border-color: #c07b3a;
   font-weight: 600;
 }
 
@@ -155,7 +111,7 @@
   border-radius: 13px;
   overflow: hidden;
   margin-bottom: 12px;
-  box-shadow: 0 1px 2px rgba(16, 24, 40, 0.05);
+  box-shadow: 0 1px 2px rgba(90, 64, 32, 0.07);
 }
 
 .gcover {
@@ -176,7 +132,7 @@
 .ginitial {
   font-size: 38px;
   font-weight: 700;
-  color: rgba(16, 24, 40, 0.16);
+  color: rgba(58, 44, 28, 0.18);
 }
 
 /* 推荐角标：红色底，与「限时」的绿色区分开 */
@@ -195,7 +151,7 @@
 .badge.right {
   left: auto;
   right: 7px;
-  background: #12b76a;
+  background: #f79009;
 }
 
 .soldout {
@@ -218,7 +174,7 @@
   font-size: 12.5px;
   line-height: 1.45;
   height: 36px;
-  color: #101828;
+  color: #3a2c1c;
 }
 
 .gtags {
@@ -240,15 +196,15 @@
 .gsold {
   margin-left: auto;
   font-size: 10px;
-  color: #98a2b3;
+  color: #b9a894;
 }
 
 .retry-btn {
   display: inline-block;
   margin-top: 14px;
   font-size: 13px;
-  color: #12b76a;
-  border: 1px solid #b7e8cf;
+  color: #c07b3a;
+  border: 1px solid #eadcc7;
   border-radius: 8px;
   padding: 7px 18px;
 }

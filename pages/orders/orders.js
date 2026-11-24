@@ -1,9 +1,14 @@
 // pages/orders/orders.js —— 订单列表：本地订单号 + 实时状态回查
 const orders = require('../../services/orders.js');
 const format = require('../../utils/format.js');
+const nav = require('../../utils/nav.js');
 
 Page({
   data: {
+    // 自定义导航尺寸，由 utils/nav.js 注入（见 onLoad）
+    statusBar: 20,
+    navH: 44,
+    capsuleGap: 96,
     tab: 'all',
     list: [],
     filtered: [],
@@ -13,6 +18,7 @@ Page({
   },
 
   onLoad() {
+    nav.apply(this);
     this.load(false);
   },
 

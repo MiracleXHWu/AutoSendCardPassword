@@ -4,6 +4,7 @@ const orders = require('../../services/orders.js');
 const api = require('../../services/api.js');
 const config = require('../../config.js');
 const format = require('../../utils/format.js');
+const nav = require('../../utils/nav.js');
 
 // 用安全访问层替代模块顶层 getApp()：热重载/独立上下文下 App 可能尚未就绪
 const app = require('../../utils/app.js');
@@ -11,12 +12,20 @@ const app = require('../../utils/app.js');
 Page({
   data: {
     appName: config.appName,
+    // 自定义导航尺寸，由 utils/nav.js 注入（见 onLoad）
+    statusBar: 20,
+    navH: 44,
+    capsuleGap: 96,
     profile: null,
     guest: true,
     phone: '',
     stats: { total: 0, paid: 0, unpaid: 0 },
     catCount: 0,
     goodsCount: 0
+  },
+
+  onLoad() {
+    nav.apply(this);
   },
 
   onShow() {

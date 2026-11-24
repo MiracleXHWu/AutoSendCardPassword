@@ -1,44 +1,15 @@
 /* pages/category/category.wxss */
+/* 顶部渐变头由 app.wxss 的 .screen-hero 提供，本页不再单独写白底导航区 */
 .catpage {
   height: 100vh;
   display: flex;
   flex-direction: column;
-  background: #f5f6f8;
+  background: var(--paper);
 }
 
-.searchbar {
-  padding: 8px 16px 10px;
-  background: #fff;
-}
-
-.srch {
-  height: 34px;
-  border-radius: 17px;
-  background: #eef1f5;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 0 12px;
-  color: #98a2b3;
-  font-size: 12.5px;
-}
-
-.srch-ico {
-  width: 13px;
-  height: 13px;
-  border: 1.6px solid #98a2b3;
-  border-radius: 50%;
-  position: relative;
-}
-.srch-ico::after {
-  content: '';
-  position: absolute;
-  right: -3px;
-  bottom: -2px;
-  width: 5px;
-  height: 1.5px;
-  background: #98a2b3;
-  transform: rotate(45deg);
+.cat-hero {
+  padding-bottom: 14px;
+  flex: 0 0 auto;
 }
 
 .split {
@@ -47,26 +18,27 @@
   min-height: 0;
 }
 
-/* 左侧 */
+/* 左侧一级类目：暖米色侧栏，不抢右侧商品卡 */
 .side {
   width: 96px;
   flex: 0 0 96px;
-  background: #f0f2f5;
+  background: #f4ecdf;
   height: 100%;
 }
 
 .side-item {
   padding: 15px 10px;
   font-size: 12.5px;
-  color: #667085;
+  color: var(--ink-sub);
   text-align: center;
   position: relative;
   line-height: 1.35;
 }
 
+/* 选中项取页面底色，与右侧内容区连成一片 */
 .side-item.on {
-  background: #fff;
-  color: #101828;
+  background: var(--paper);
+  color: var(--ink);
   font-weight: 600;
 }
 
@@ -78,22 +50,22 @@
   transform: translateY(-50%);
   width: 3px;
   height: 16px;
-  background: #12b76a;
+  background: var(--brand);
   border-radius: 0 2px 2px 0;
 }
 
 .side-empty {
   padding: 20px 10px;
   font-size: 12px;
-  color: #98a2b3;
+  color: var(--ink-dim);
   text-align: center;
 }
 
-/* 右侧 */
+/* 右侧商品区：透明底，跟随页面暖砂色，仅卡片为白色 */
 .main {
   flex: 1;
   height: 100%;
-  background: #fff;
+  background: transparent;
   padding: 0 12px;
   min-width: 0;
 }
@@ -108,12 +80,12 @@
 .main-title {
   font-size: 15px;
   font-weight: 700;
-  color: #101828;
+  color: var(--ink);
 }
 
 .main-count {
   font-size: 11px;
-  color: #98a2b3;
+  color: var(--ink-dim);
 }
 
 .sub-scroll {
@@ -130,16 +102,16 @@
 .sub {
   flex: 0 0 auto;
   font-size: 11.5px;
-  color: #667085;
-  background: #f4f6f8;
+  color: var(--ink-sub);
+  background: #f4ecdf;
   border-radius: 6px;
   padding: 5px 10px;
   line-height: 1.2;
 }
 
 .sub.on {
-  background: #e7f8f0;
-  color: #0f9a59;
+  background: var(--brand-l);
+  color: var(--brand-d);
   font-weight: 600;
 }
 
@@ -152,7 +124,8 @@
 
 .gcard {
   width: 48.5%;
-  border: 1px solid #f2f4f7;
+  background: #fff;
+  border: 1px solid #f2e8da;
   border-radius: 11px;
   overflow: hidden;
   margin-bottom: 10px;
@@ -175,13 +148,13 @@
 .ginitial {
   font-size: 30px;
   font-weight: 700;
-  color: rgba(16, 24, 40, 0.16);
+  color: rgba(58, 44, 28, 0.18);
 }
 
 .soldout {
   position: absolute;
   inset: 0;
-  background: rgba(16, 24, 40, 0.45);
+  background: rgba(58, 44, 28, 0.45);
   color: #fff;
   font-size: 11.5px;
   display: flex;
@@ -197,7 +170,7 @@
   font-size: 12px;
   line-height: 1.4;
   height: 34px;
-  color: #101828;
+  color: var(--ink);
 }
 
 .gfoot {
@@ -213,15 +186,15 @@
 .gsold {
   margin-left: auto;
   font-size: 9.5px;
-  color: #98a2b3;
+  color: var(--ink-dim);
 }
 
 .retry-btn {
   display: inline-block;
   margin-top: 14px;
   font-size: 13px;
-  color: #12b76a;
-  border: 1px solid #b7e8cf;
+  color: var(--brand);
+  border: 1px solid #eadcc7;
   border-radius: 8px;
   padding: 7px 18px;
 }

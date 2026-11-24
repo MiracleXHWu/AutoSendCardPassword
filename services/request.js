@@ -19,13 +19,13 @@ const COOKIE_KEY = 'faka.cookie';
 const COOKIE_HOST_KEY = 'faka.cookie.host';
 
 /**
- * 请求 UA
+ * 关于 User-Agent
  * faka 的 /user/api/index/pay 会按 UA 判定终端类型（Client::isMobile / isWeChat），
- * 空 UA 会让它在服务端直接 500 并返回 HTML 错误页。这里固定成一个
- * 「移动端 + 微信」的串，保证 equipment=3 这条分支稳定命中。
+ * 但小程序的 wx.request **禁止**设置 user-agent，控制台会报
+ * "Refused to set unsafe header user-agent"。
+ * 好消息是微信自己会带上含 MicroMessenger 的 UA，正好命中
+ * Client::isMobile() 的关键词表，equipment=3 仍然稳定。
  */
-const UA = 'Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 '
-  + '(KHTML, like Gecko) Mobile/15E148 MicroMessenger/8.0.40(0x18002823) NetType/WIFI MiniProgramEnv/iOS';
 
 /* ------------------------------------------------------------------ */
 /* 错误类型                                                            */
@@ -208,8 +208,7 @@ function request(opts) {
   let url = /^https?:/i.test(opts.path) ? opts.path : base + opts.path;
 
   const header = {
-    'content-type': 'application/x-www-form-urlencoded',
-    'user-agent': UA
+    'content-type': 'application/x-www-form-urlencoded'
   };
   const cookie = readCookie();
   if (cookie) header.Cookie = cookie;

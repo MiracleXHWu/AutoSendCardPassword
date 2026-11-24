@@ -1,9 +1,13 @@
 <!-- pages/category/category.wxml -->
 <view class="catpage">
-  <view class="searchbar" bindtap="gotoSearch">
-    <view class="srch">
-      <view class="srch-ico"></view>
-      <text>搜索商品</text>
+  <!-- 顶部：全铺满渐变头（替代原生白底导航栏，与首页同一套 .screen-hero） -->
+  <view class="screen-hero cat-hero" style="padding-top:{{statusBar}}px">
+    <view class="nav-row" style="height:{{navH}}px;padding-right:{{capsuleGap}}px">
+      <text class="nav-title">商品分类</text>
+    </view>
+    <view class="search-pill" bindtap="gotoSearch">
+      <view class="search-pill-ico"></view>
+      <text class="search-pill-txt">搜索商品 / 关键词</text>
     </view>
   </view>
 

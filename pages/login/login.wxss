@@ -1,7 +1,7 @@
 /* pages/login/login.wxss */
 .loginpage {
   min-height: 100vh;
-  background: linear-gradient(170deg, #0f2a1d 0%, #0b1a14 42%, #f5f6f8 42.1%, #f5f6f8 100%);
+  background: linear-gradient(170deg, #fdf9f3 0%, #f5ead9 42%, #faf6f0 42.1%, #faf6f0 100%);
   padding: 0 22px;
 }
 
@@ -14,21 +14,21 @@
   width: 58px;
   height: 58px;
   border-radius: 16px;
-  background: rgba(255, 255, 255, 0.12);
-  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid rgba(58, 44, 28, 0.1);
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
 .logo-text {
-  color: #12b76a;
+  color: #c07b3a;
   font-size: 26px;
   font-weight: 700;
 }
 
 .title {
-  color: #fff;
+  color: #3a2c1c;
   font-size: 24px;
   font-weight: 700;
   margin-top: 18px;
@@ -36,7 +36,7 @@
 }
 
 .sub {
-  color: #7fa290;
+  color: #8a7458;
   font-size: 12.5px;
   margin-top: 7px;
 }
@@ -53,7 +53,7 @@
   background: #fff;
   border-radius: 14px;
   padding: 15px 14px;
-  box-shadow: 0 8px 24px -16px rgba(16, 24, 40, 0.4);
+  box-shadow: 0 8px 24px -16px rgba(90, 64, 32, 0.3);
 }
 
 .dot {
@@ -90,7 +90,7 @@
   width: 14px;
   height: 14px;
   border-radius: 50%;
-  border: 2px solid #12b76a;
+  border: 2px solid #c07b3a;
   border-top-color: transparent;
   animation: spin 0.8s linear infinite;
 }
@@ -103,7 +103,7 @@
 .st-title {
   font-size: 14px;
   font-weight: 600;
-  color: #101828;
+  color: #3a2c1c;
 }
 
 .st-sub {
@@ -130,7 +130,7 @@
 
 .pc-value {
   font-size: 14px;
-  color: #101828;
+  color: #3a2c1c;
   margin-top: 4px;
 }
 

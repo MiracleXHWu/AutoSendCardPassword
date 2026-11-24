@@ -1,7 +1,7 @@
 /* pages/search/search.wxss */
 .searchpage {
   min-height: 100vh;
-  background: #fff;
+  background: #faf6f0;
 }
 
 .bar {
@@ -9,8 +9,8 @@
   align-items: center;
   gap: 10px;
   padding: 8px 16px 12px;
-  background: #fff;
-  border-bottom: 1px solid #f2f4f7;
+  background: #faf6f0;
+  border-bottom: 1px solid #f0e5d6;
   position: sticky;
   top: 0;
   z-index: 10;
@@ -20,7 +20,7 @@
   flex: 1;
   height: 34px;
   border-radius: 17px;
-  background: #eef1f5;
+  background: #f5eee3;
   display: flex;
   align-items: center;
   gap: 7px;
@@ -111,7 +111,7 @@
 }
 
 .chip.hot {
-  background: #f2fbf7;
+  background: #fdf3e6;
   color: #0f9a59;
 }
 

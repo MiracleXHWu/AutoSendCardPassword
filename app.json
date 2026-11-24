@@ -17,12 +17,12 @@
     "navigationBarBackgroundColor": "#ffffff",
     "navigationBarTitleText": "影软小铺",
     "navigationBarTextStyle": "black",
-    "backgroundColor": "#f5f6f8"
+    "backgroundColor": "#faf6f0"
   },
   "tabBar": {
     "custom": true,
-    "color": "#98a2b3",
-    "selectedColor": "#12b76a",
+    "color": "#b9a894",
+    "selectedColor": "#c07b3a",
     "backgroundColor": "#ffffff",
     "borderStyle": "white",
     "list": [

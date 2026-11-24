@@ -1,8 +1,13 @@
 <!-- pages/orders/orders.wxml -->
 <view class="orderspage">
-  <!-- 顶部统计 + 查单入口 -->
-  <view class="head">
-    <view class="stats">
+  <!-- 顶部：全铺满渐变头（替代原生白底导航栏） -->
+  <view class="screen-hero" style="padding-top:{{statusBar}}px">
+    <view class="nav-row" style="height:{{navH}}px;padding-right:{{capsuleGap}}px">
+      <text class="nav-title">我的订单</text>
+      <text class="nav-sub" wx:if="{{stats.total}}">共 {{stats.total}} 单</text>
+    </view>
+
+    <view class="stats glass">
       <view class="stat"><text class="n">{{stats.total}}</text><text class="l">全部订单</text></view>
       <view class="stat"><text class="n amber">{{stats.unpaid}}</text><text class="l">待支付</text></view>
       <view class="stat"><text class="n green">{{stats.paid}}</text><text class="l">已支付</text></view>

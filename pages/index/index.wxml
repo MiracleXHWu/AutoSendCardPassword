@@ -1,20 +1,20 @@
 <!-- pages/index/index.wxml -->
 <view class="page index">
-  <!-- 顶部：搜索 + 分类快捷 -->
-  <view class="hero" style="padding-top:{{statusBar + 10}}px">
-    <view class="hero-top">
+  <!-- 顶部：全铺满渐变头（与分类 / 订单 / 我的 共用 .screen-hero） -->
+  <view class="screen-hero" style="padding-top:{{statusBar}}px">
+    <view class="hero-top" style="padding-right:{{capsuleGap}}px">
       <view class="hero-title">
         <view class="brand">{{appName}}</view>
         <view class="slogan">付款即刻自动发货 · 全程自助</view>
       </view>
     </view>
 
-    <view class="srch" bindtap="gotoSearch">
-      <view class="srch-ico"></view>
-      <text class="srch-txt">搜索商品名称 / 关键词</text>
+    <view class="search-pill" bindtap="gotoSearch">
+      <view class="search-pill-ico"></view>
+      <text class="search-pill-txt">搜索商品名称 / 关键词</text>
     </view>
 
-    <view class="hero-stats">
+    <view class="hero-stats glass">
       <view class="hs"><text class="hs-n">{{goods.length}}</text><text class="hs-l">在售商品</text></view>
       <view class="hs-line"></view>
       <view class="hs"><text class="hs-n">{{categories.length}}</text><text class="hs-l">商品分类</text></view>

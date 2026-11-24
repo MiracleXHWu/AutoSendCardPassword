@@ -2,6 +2,7 @@
 const api = require('../../services/api.js');
 const format = require('../../utils/format.js');
 const config = require('../../config.js');
+const nav = require('../../utils/nav.js');
 
 // 用安全访问层替代模块顶层 getApp()：热重载/独立上下文下 App 可能尚未就绪
 const app = require('../../utils/app.js');
@@ -16,6 +17,10 @@ const COVER_COLORS = [
 
 Page({
   data: {
+    // 自定义导航尺寸，由 utils/nav.js 注入（见 onLoad）
+    statusBar: 20,
+    navH: 44,
+    capsuleGap: 96,
     loading: true,
     error: '',
     tree: [],
@@ -29,6 +34,7 @@ Page({
   },
 
   onLoad() {
+    nav.apply(this);
     this.loadCategories();
   },
 

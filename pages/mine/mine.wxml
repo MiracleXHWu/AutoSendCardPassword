@@ -1,7 +1,11 @@
 <!-- pages/mine/mine.wxml -->
 <view class="minepage">
-  <!-- 身份卡 -->
-  <view class="hero">
+  <!-- 身份卡：全铺满渐变头（替代原生白底导航栏） -->
+  <view class="screen-hero" style="padding-top:{{statusBar}}px">
+    <view class="nav-row" style="height:{{navH}}px;padding-right:{{capsuleGap}}px">
+      <text class="nav-title">我的</text>
+    </view>
+
     <view class="user">
       <view class="avatar">
         <image wx:if="{{profile.avatar}}" class="avatar-img" src="{{profile.avatar}}" mode="aspectFill" />
@@ -18,7 +22,7 @@
       <view wx:else class="login-btn" bindtap="reLogin">刷新</view>
     </view>
 
-    <view class="phone-row" bindtap="editPhone">
+    <view class="phone-row glass" bindtap="editPhone">
       <text class="phone-label">手机号</text>
       <text class="phone-val">{{phoneMasked || '未填写（选填）'}}</text>
       <text class="phone-arrow">›</text>

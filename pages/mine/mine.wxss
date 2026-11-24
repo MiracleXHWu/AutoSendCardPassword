@@ -1,20 +1,15 @@
 /* pages/mine/mine.wxss */
 .minepage {
   min-height: 100vh;
-  background: #f5f6f8;
+  background: var(--paper);
 }
 
-/* 头部 */
-.hero {
-  background: linear-gradient(165deg, #0f2a1d, #0b1a14);
-  padding: 22px 18px 16px;
-  border-radius: 0 0 20px 20px;
-}
-
+/* 头部：渐变底与圆角由 app.wxss 的 .screen-hero 统一提供 */
 .user {
   display: flex;
   align-items: center;
   gap: 12px;
+  margin-top: 4px;
 }
 
 .avatar {
@@ -22,7 +17,8 @@
   height: 52px;
   flex: 0 0 52px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.62);
+  border: 1px solid rgba(255, 255, 255, 0.9);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -35,27 +31,28 @@
 }
 
 .avatar-text {
-  color: #cfe6da;
+  color: #a3672a;
   font-size: 20px;
   font-weight: 600;
 }
 
 .uname {
-  color: #fff;
+  color: #3a2c1c;
   font-size: 17px;
   font-weight: 600;
 }
 
 .ustatus {
-  color: #7fa290;
+  color: #8a7458;
   font-size: 11px;
   margin-top: 4px;
 }
 
 .login-btn {
-  color: #cfe6da;
+  color: #a3672a;
   font-size: 12px;
-  border: 1px solid rgba(207, 230, 218, 0.3);
+  background: rgba(255, 255, 255, 0.5);
+  border: 1px solid rgba(58, 44, 28, 0.18);
   border-radius: 999px;
   padding: 6px 14px;
   flex: 0 0 auto;
@@ -65,25 +62,23 @@
   margin-top: 16px;
   display: flex;
   align-items: center;
-  background: rgba(255, 255, 255, 0.07);
-  border-radius: 11px;
   padding: 11px 13px;
 }
 
 .phone-label {
-  color: #8fb3a2;
+  color: #8a7458;
   font-size: 12px;
   width: 60px;
 }
 
 .phone-val {
   flex: 1;
-  color: #e7f4ec;
+  color: #3a2c1c;
   font-size: 12.5px;
 }
 
 .phone-arrow {
-  color: #6d8a7c;
+  color: #c0aa8b;
   font-size: 14px;
 }
 
@@ -95,7 +90,7 @@
   border-radius: 14px;
   padding: 15px 0;
   display: flex;
-  box-shadow: 0 6px 18px -12px rgba(16, 24, 40, 0.3);
+  box-shadow: 0 6px 18px -12px rgba(90, 64, 32, 0.24);
 }
 
 .stat {
@@ -108,20 +103,20 @@
 .stat .n {
   font-size: 18px;
   font-weight: 700;
-  color: #101828;
+  color: var(--ink);
 }
 
 .stat .n.amber {
-  color: #f79009;
+  color: #d9822b;
 }
 
 .stat .n.green {
-  color: #12b76a;
+  color: #4f9d6b;
 }
 
 .stat .l {
   font-size: 10.5px;
-  color: #98a2b3;
+  color: var(--ink-dim);
   margin-top: 3px;
 }
 
@@ -139,11 +134,11 @@
   gap: 11px;
   padding: 14px 14px;
   font-size: 13.5px;
-  color: #344054;
+  color: #4a3a28;
 }
 
 .menu-item + .menu-item {
-  border-top: 1px solid #f4f6f8;
+  border-top: 1px solid #f4ece0;
 }
 
 .mi-ico {
@@ -155,19 +150,19 @@
 }
 
 .mi-order {
-  background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2312b76a' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 4.6A1.6 1.6 0 0 1 6.6 3h10.8A1.6 1.6 0 0 1 19 4.6V21l-3.5-2.2L12 21l-3.5-2.2L5 21z'/%3E%3Cpath d='M9 8.4h6M9 12.4h4'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23c07b3a' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 4.6A1.6 1.6 0 0 1 6.6 3h10.8A1.6 1.6 0 0 1 19 4.6V21l-3.5-2.2L12 21l-3.5-2.2L5 21z'/%3E%3Cpath d='M9 8.4h6M9 12.4h4'/%3E%3C/svg%3E");
 }
 
 .mi-search {
-  background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%232e90fa' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cpath d='M16.5 16.5 21 21'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23b0813f' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cpath d='M16.5 16.5 21 21'/%3E%3C/svg%3E");
 }
 
 .mi-help {
-  background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23f79009' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Cpath d='M9.5 9.5a2.5 2.5 0 1 1 3.4 2.3c-.6.3-.9.8-.9 1.4v.3M12 17h.01'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23d9822b' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Cpath d='M9.5 9.5a2.5 2.5 0 1 1 3.4 2.3c-.6.3-.9.8-.9 1.4v.3M12 17h.01'/%3E%3C/svg%3E");
 }
 
 .mi-info {
-  background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2398a2b3' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Cpath d='M12 11v5M12 8h.01'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23b9a894' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Cpath d='M12 11v5M12 8h.01'/%3E%3C/svg%3E");
 }
 
 .mi-text {
@@ -175,7 +170,7 @@
 }
 
 .mi-arrow {
-  color: #d0d5dd;
+  color: #d8c9b4;
   font-size: 15px;
 }
 
@@ -194,5 +189,5 @@
   text-align: center;
   margin-top: 26px;
   font-size: 11.5px;
-  color: #b0b8c4;
+  color: #b9a894;
 }

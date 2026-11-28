@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>浅色主题方案对比 · 首页 / 我的</title>
+<style>
+  :root{
+    --canvas:#e9ecf0;
+    --txt:#1b2432;
+    --muted:#6b7688;
+    --border:#dfe4ea;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:auto}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;
+    background:var(--canvas);color:var(--txt);
+    -webkit-font-smoothing:antialiased;
+    padding-bottom:60px;
+  }
+
+  /* ---------- 顶栏 ---------- */
+  .topbar{
+    position:sticky;top:0;z-index:30;
+    background:rgba(233,236,240,.9);
+    -webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);
+    border-bottom:1px solid #d7dde5;
+  }
+  .topbar-in{
+    max-width:1180px;margin:0 auto;padding:13px 24px;
+    display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+  }
+  .ttl{font-size:15.5px;font-weight:600;letter-spacing:.2px}
+  .ttl small{font-weight:400;font-size:12px;color:var(--muted);margin-left:8px}
+  .picked{
+    font-size:12px;color:#0b7a55;background:#e2f5ec;border:1px solid #b7e8cf;
+    border-radius:999px;padding:4px 11px;white-space:nowrap
+  }
+  .picked.none{color:#7a8699;background:#eef1f5;border-color:#dde3ea}
+  .seg{
+    margin-left:auto;display:flex;background:#dde2e9;border-radius:9px;padding:3px;gap:2px;
+  }
+  .seg button{
+    border:0;background:transparent;font:inherit;font-size:12.5px;color:#4a5568;
+    padding:6px 13px;border-radius:7px;cursor:pointer;transition:.15s;
+  }
+  .seg button.on{background:#fff;color:#111a28;font-weight:600;box-shadow:0 1px 2px rgba(16,24,40,.1)}
+  body.only-index .phone[data-page="mine"],
+  body.only-mine .phone[data-page="index"]{display:none}
+
+  /* ---------- 方案卡 ---------- */
+  main{max-width:1180px;margin:0 auto;padding:20px 24px 0}
+  .plan{
+    background:#fff;border-radius:16px;padding:22px 24px 24px;
+    margin-bottom:18px;border:1px solid rgba(16,24,40,.06);
+    box-shadow:0 2px 10px -6px rgba(16,24,40,.18);
+    transition:.2s;
+  }
+  .plan.picked-plan{box-shadow:0 0 0 2px #12b76a,0 6px 22px -10px rgba(18,183,106,.45)}
+  .plan-head{display:flex;gap:20px;align-items:flex-start;flex-wrap:wrap;margin-bottom:18px}
+  .ph-l{flex:1;min-width:280px}
+  .ptag{
+    display:inline-block;font-size:11px;font-weight:600;letter-spacing:.4px;
+    color:#475467;background:#f2f4f7;border-radius:5px;padding:3px 8px;margin-right:8px;
+  }
+  .pname{font-size:16px;font-weight:600;display:inline-block;vertical-align:middle}
+  .pname em{font-style:normal;font-size:12.5px;font-weight:400;color:#98a2b3;margin-left:7px}
+  .rec{
+    display:inline-block;font-size:10.5px;color:#0b7a55;background:#e2f5ec;
+    border:1px solid #b7e8cf;border-radius:5px;padding:2px 7px;margin-left:8px;vertical-align:2px
+  }
+  .pdesc{font-size:12.5px;line-height:1.75;color:var(--muted);margin-top:9px;max-width:620px}
+  .swatches{display:flex;gap:14px;margin-top:13px;flex-wrap:wrap}
+  .sw{display:flex;align-items:center;gap:7px;font-size:11px;color:#667085;font-variant-numeric:tabular-nums}
+  .sw i{width:18px;height:18px;border-radius:5px;border:1px solid rgba(16,24,40,.12);display:block}
+  .pick-btn{
+    border:1px solid #d0d5dd;background:#fff;color:#344054;font:inherit;font-size:12.5px;
+    padding:8px 16px;border-radius:9px;cursor:pointer;white-space:nowrap;transition:.15s
+  }
+  .pick-btn:hover{border-color:#12b76a;color:#0b7a55}
+  .plan.picked-plan .pick-btn{background:#12b76a;border-color:#12b76a;color:#fff;font-weight:600}
+
+  .phones{display:flex;gap:26px;justify-content:center;flex-wrap:wrap}
+  .phone{width:344px}
+  .cap{
+    text-align:center;font-size:11.5px;color:#98a2b3;margin-top:9px;letter-spacing:.3px
+  }
+
+  /* ---------- 手机屏 ---------- */
+  .screen{
+    width:344px;height:672px;position:relative;overflow:hidden;
+    border-radius:26px;background:var(--pg);
+    border:1px solid rgba(16,24,40,.09);
+    box-shadow:0 10px 26px -16px rgba(16,24,40,.4);
+  }
+
+  /* 状态栏 + 胶囊 */
+  .sbar{
+    position:absolute;left:0;right:0;top:0;height:44px;z-index:6;
+    display:flex;align-items:center;justify-content:space-between;
+    padding:0 14px 0 20px;color:var(--ink);font-size:12px;font-weight:600;
+  }
+  .tm{opacity:.8;letter-spacing:.3px}
+  .caps{
+    display:flex;align-items:center;gap:7px;height:24px;padding:0 9px;border-radius:999px;
+    background:rgba(255,255,255,.5);border:1px solid rgba(16,24,40,.1);
+  }
+  .dots{display:flex;gap:3px}
+  .dots i{width:3px;height:3px;border-radius:50%;background:var(--ink);opacity:.7;display:block}
+  .capdiv{width:1px;height:11px;background:rgba(16,24,40,.14)}
+  .capring{width:10px;height:10px;border:1.4px solid var(--ink);border-radius:50%;opacity:.7}
+
+  /* Hero */
+  .hero{
+    position:relative;padding:46px 18px 17px;
+    background:linear-gradient(168deg,var(--h1) 0%,var(--h2) 100%);
+    border-radius:0 0 22px 22px;
+  }
+  .brand{font-size:20px;font-weight:700;color:var(--ink);letter-spacing:.2px;line-height:1.3}
+  .slogan{font-size:11.5px;color:var(--sub);margin-top:4px;letter-spacing:.2px}
+  .srch{
+    margin-top:14px;height:36px;border-radius:18px;background:var(--srch);
+    border:1px solid var(--srchBd);display:flex;align-items:center;gap:8px;padding:0 13px;
+  }
+  .sico{width:13px;height:13px;border:1.5px solid var(--sub);border-radius:50%;position:relative;flex:0 0 auto;opacity:.9}
+  .sico::after{
+    content:'';position:absolute;right:-3px;bottom:-2px;width:5px;height:1.5px;
+    background:var(--sub);transform:rotate(45deg);border-radius:2px;
+  }
+  .srch span{font-size:12px;color:var(--sub)}
+  .stats{
+    margin-top:13px;display:flex;align-items:center;border-radius:11px;
+    background:var(--stat);padding:9px 0;
+    border:1px solid rgba(255,255,255,.55);
+  }
+  .st{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px}
+  .st b{font-size:14.5px;font-weight:700;color:var(--ink);line-height:1.1}
+  .st span{font-size:10px;color:var(--sub);letter-spacing:.1px}
+  .vline{width:1px;height:20px;background:var(--line)}
+
+  /* 分类 chips */
+  .chips{display:flex;gap:7px;padding:12px 16px 4px;overflow:hidden}
+  .chip{
+    flex:0 0 auto;font-size:12px;color:var(--sub);background:var(--card);
+    border:1px solid var(--line);padding:6px 13px;border-radius:999px;line-height:1.2;
+  }
+  .chip.on{background:var(--onBg);color:var(--onTx);border-color:var(--onBg);font-weight:600}
+
+  /* 商品网格 */
+  .grid{display:flex;flex-wrap:wrap;justify-content:space-between;padding:4px 16px 0}
+  .gcard{width:48.5%;background:var(--card);border-radius:12px;overflow:hidden;margin-bottom:11px;
+    border:1px solid rgba(16,24,40,.045)}
+  .gcover{
+    position:relative;height:120px;display:flex;align-items:center;justify-content:center;
+    background:linear-gradient(135deg,#f0f4f7 0%,#e2e9ef 100%);
+  }
+  .ginit{font-size:34px;font-weight:700;color:rgba(16,24,40,.14)}
+  .badge{
+    position:absolute;left:6px;top:6px;font-size:9px;color:#fff;background:#f04438;
+    padding:2px 5px;border-radius:4px;line-height:1.45;letter-spacing:.2px;
+  }
+  .badge.green{background:#12b76a}
+  .gb{padding:8px 9px 9px}
+  .gn{
+    font-size:12px;line-height:1.45;height:34px;color:var(--ink);
+    display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
+  }
+  .gtags{display:flex;gap:4px;margin-top:5px;height:15px;overflow:hidden}
+  .tag{
+    font-size:9px;color:var(--tagTx);background:var(--tagBg);border-radius:3px;padding:1px 4px;
+    line-height:1.5;white-space:nowrap;
+  }
+  .tag.gray{color:#8a94a6;background:#f2f4f7}
+  .gfoot{display:flex;align-items:baseline;margin-top:6px}
+  .price{font-size:14px;font-weight:700;color:var(--acc)}
+  .price i{font-size:10px;font-style:normal;font-weight:600;margin-right:1px}
+  .gsold{margin-left:auto;font-size:9px;color:var(--faint)}
+  .more{text-align:center;font-size:10.5px;color:var(--faint);padding:6px 0 0}
+
+  /* tabbar */
+  .tabbar{
+    position:absolute;left:0;right:0;bottom:0;height:56px;display:flex;
+    background:var(--card);border-top:1px solid var(--line);
+  }
+  .tb{
+    flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
+    font-size:9px;color:var(--faint);letter-spacing:.2px;
+  }
+  .tb svg{width:19px;height:19px;display:block}
+  .tb.on{color:var(--acc);font-weight:600}
+
+  /* 我的页 */
+  .hero.mine{padding:74px 18px 15px;border-radius:0 0 20px 20px}
+  .user{display:flex;align-items:center;gap:11px}
+  .avatar{
+    width:50px;height:50px;flex:0 0 50px;border-radius:50%;
+    background:rgba(255,255,255,.6);border:1px solid rgba(255,255,255,.9);
+    display:flex;align-items:center;justify-content:center;
+    font-size:19px;font-weight:600;color:var(--ink)
+  }
+  .flex1{flex:1;min-width:0}
+  .uname{font-size:16px;font-weight:600;color:var(--ink)}
+  .ustatus{font-size:10.5px;color:var(--sub);margin-top:3px}
+  .login-btn{
+    font-size:11.5px;color:var(--sub);border:1px solid rgba(16,24,40,.14);
+    border-radius:999px;padding:5px 13px;flex:0 0 auto;background:rgba(255,255,255,.45)
+  }
+  .prow{
+    margin-top:14px;display:flex;align-items:center;border-radius:10px;
+    background:var(--stat);border:1px solid rgba(255,255,255,.55);padding:10px 12px;
+  }
+  .pl{font-size:11.5px;color:var(--sub);width:56px}
+  .pv{flex:1;font-size:12px;color:var(--ink);letter-spacing:.2px}
+  .pa{font-size:13px;color:var(--faint)}
+
+  .stats-card{
+    margin:-14px 16px 0;position:relative;background:var(--card);border-radius:13px;
+    padding:14px 0;display:flex;
+    box-shadow:0 8px 20px -14px rgba(16,24,40,.35);
+    border:1px solid rgba(16,24,40,.05);
+  }
+  .stat{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px}
+  .stat b{font-size:17px;font-weight:700;color:var(--ink);line-height:1.15}
+  .stat b.amber{color:#f79009}
+  .stat b.green{color:#12b76a}
+  .stat span{font-size:9.5px;color:var(--faint)}
+
+  .menu{margin:11px 16px 0;background:var(--card);border-radius:12px;overflow:hidden;
+    border:1px solid rgba(16,24,40,.05)}
+  .mi{display:flex;align-items:center;gap:10px;padding:13px;font-size:12.5px;color:var(--ink)}
+  .mi + .mi{border-top:1px solid var(--line)}
+  .mi svg{width:18px;height:18px;flex:0 0 18px;color:var(--acc)}
+  .mi .t{flex:1}
+  .mi .a{font-size:13px;color:var(--faint)}
+  .logout{margin:12px 16px 0;text-align:center;font-size:12px;color:#f04438;
+    background:var(--card);border-radius:11px;padding:11px;border:1px solid rgba(16,24,40,.05)}
+  .foot{text-align:center;margin-top:16px;font-size:10.5px;color:var(--faint);line-height:1.7}
+
+  /* 说明 */
+  .notes{max-width:1180px;margin:6px auto 0;padding:0 24px}
+  .notes details{
+    background:#fff;border-radius:14px;border:1px solid rgba(16,24,40,.06);
+    padding:16px 20px;font-size:12.5px;color:#475467;line-height:1.85
+  }
+  .notes summary{cursor:pointer;font-size:13px;font-weight:600;color:#1b2432;outline:none}
+  .notes ul{margin:12px 0 0 18px}
+  .notes code{
+    font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:11.5px;
+    background:#f2f4f7;border-radius:4px;padding:1px 5px;color:#344054
+  }
+  @media (max-width:820px){
+    main{padding:16px 14px 0}
+    .plan{padding:18px 16px}
+    .phones{gap:18px}
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-in">
+    <div class="ttl">浅色主题候选方案<small>首页 / 我的 · 6 套</small></div>
+    <div class="picked none" id="picked">尚未选择</div>
+    <div class="seg" id="seg">
+      <button data-view="both" class="on">两页并排</button>
+      <button data-view="index">只看首页</button>
+      <button data-view="mine">只看我的</button>
+    </div>
+  </div>
+</div>
+
+<main id="plans"></main>
+
+<div class="notes">
+  <details>
+    <summary>确认方案后我会改哪些地方（只动配色，不动结构）</summary>
+    <ul>
+      <li><code>index.wxss</code>：<code>.hero</code>（渐变换成浅色）、<code>.brand</code>/<code>.slogan</code>（白字改深字）、<code>.srch</code>、<code>.hero-stats</code>、<code>.cat</code>/<code>.cat.on</code>、<code>.price</code></li>
+      <li><code>mine.wxss</code>：<code>.minepage</code>、<code>.hero</code>、<code>.avatar</code>、<code>.uname</code>/<code>.ustatus</code>、<code>.login-btn</code>、<code>.phone-row</code>、<code>.stats-card</code></li>
+      <li><code>app.wxss</code>：页面基础背景色（现在是 <code>#f5f6f8</code>）</li>
+      <li>底部 tabBar（<code>custom-tab-bar</code>）的选中色会跟着强调色一起调，避免两套绿打架</li>
+      <li>商品封面的浅灰渐变「推荐」红色角标 <code>#f04438</code> 建议保持不变（你之前指定过）</li>
+    </ul>
+    <p style="margin-top:12px">注意：浅色 hero 下原来的白色半透明块（搜索框、统计条）会几乎看不见，所以每套方案都单独配了「白色描边卡片」或「浅一档的底色」，不是简单把深色反相。</p>
+  </details>
+</div>
+
+<script>
+const ICON = {
+  home:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 10.6 12 3.6l8.5 7"/><path d="M5.6 9.6V20h12.8V9.6"/><path d="M9.8 20v-5.4h4.4V20"/></svg>',
+  grid:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><rect x="3.6" y="3.6" width="7" height="7" rx="1.6"/><rect x="13.4" y="3.6" width="7" height="7" rx="1.6"/><rect x="3.6" y="13.4" width="7" height="7" rx="1.6"/><rect x="13.4" y="13.4" width="7" height="7" rx="1.6"/></svg>',
+  list:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M9 6.5h11M9 12h11M9 17.5h11"/><circle cx="4.6" cy="6.5" r="1.1" fill="currentColor" stroke="none"/><circle cx="4.6" cy="12" r="1.1" fill="currentColor" stroke="none"/><circle cx="4.6" cy="17.5" r="1.1" fill="currentColor" stroke="none"/></svg>',
+  user:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8.2" r="3.6"/><path d="M4.8 20.2c.8-3.6 3.7-5.6 7.2-5.6s6.4 2 7.2 5.6"/></svg>',
+  order:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5.6 4.6A1.6 1.6 0 0 1 7.2 3h9.6a1.6 1.6 0 0 1 1.6 1.6V21l-3.2-2-3.2 2-3.2-2L5.6 21z"/><path d="M9.2 8.4h5.6M9.2 12.2h3.6"/></svg>',
+  find:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="10.8" cy="10.8" r="6.6"/><path d="M15.6 15.6 20.4 20.4"/></svg>',
+  help:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.6"/><path d="M9.6 9.6a2.4 2.4 0 1 1 3.3 2.2c-.6.3-.9.8-.9 1.4v.3"/><circle cx="12" cy="17" r=".9" fill="currentColor" stroke="none"/></svg>',
+  info:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="12" cy="12" r="8.6"/><path d="M12 11v5.2"/><circle cx="12" cy="7.9" r=".9" fill="currentColor" stroke="none"/></svg>'
+};
+
+const PLANS = [
+  {
+    id:'A', name:'雾青绿', en:'Mint Mist', rec:true,
+    desc:'把现有深墨绿反转为浅绿雾面。品牌识别延续性最强，绿色在「自动发货」场景里本身就代表成功与即时。整体最不容易做错。',
+    v:{pg:'#f4f7f5',h1:'#e9f6ef',h2:'#dcefe4',ink:'#12352a',sub:'#5c8574',faint:'#9db8ac',
+       line:'rgba(18,53,42,.10)',srch:'rgba(255,255,255,.86)',srchBd:'#cfe6da',
+       stat:'rgba(255,255,255,.62)',card:'#ffffff',acc:'#0e9f6e',onBg:'#12352a',onTx:'#ffffff',tagBg:'#e6f6ef',tagTx:'#0b7a55'}
+  },
+  {
+    id:'B', name:'晨雾白', en:'Porcelain', rec:true,
+    desc:'几乎纯白，只用极淡的冷灰做层次。最克制、最像工具型产品，商品图会显得最干净；缺点是首页缺少一点「店铺感」。',
+    v:{pg:'#fafbfc',h1:'#ffffff',h2:'#f3f6f9',ink:'#0f1728',sub:'#78849a',faint:'#a9b3c1',
+       line:'rgba(15,23,40,.09)',srch:'#f2f4f7',srchBd:'#e5eaf0',
+       stat:'#ffffff',card:'#ffffff',acc:'#12b76a',onBg:'#101828',onTx:'#ffffff',tagBg:'#e8f7f0',tagTx:'#0b7a55'}
+  },
+  {
+    id:'C', name:'暖砂米', en:'Sand', rec:false,
+    desc:'米白偏暖，配暖棕强调色。亲和、有手作小店的人情味，适合客单价偏高或注重「店铺人格」的场景；价格用棕色比绿色更贵气。',
+    v:{pg:'#faf6f0',h1:'#fdf9f3',h2:'#f5ead9',ink:'#3a2c1c',sub:'#98815f',faint:'#c0aa8b',
+       line:'rgba(58,44,28,.10)',srch:'rgba(255,255,255,.82)',srchBd:'#e8d8bf',
+       stat:'rgba(255,255,255,.56)',card:'#ffffff',acc:'#c07b3a',onBg:'#3a2c1c',onTx:'#ffffff',tagBg:'#fbf0e1',tagTx:'#a06527'}
+  },
+  {
+    id:'D', name:'冰川蓝', en:'Glacier', rec:false,
+    desc:'浅蓝灰，配科技蓝强调色。冷静、可信，适合软件授权、账号类商品；比绿色更「数码」，但与「发货成功」的语义关联弱一些。',
+    v:{pg:'#f4f7fb',h1:'#eef5fd',h2:'#e1ecf9',ink:'#152a45',sub:'#7189a6',faint:'#a3b6cc',
+       line:'rgba(21,42,69,.10)',srch:'rgba(255,255,255,.86)',srchBd:'#d3e3f4',
+       stat:'rgba(255,255,255,.6)',card:'#ffffff',acc:'#2e90fa',onBg:'#152a45',onTx:'#ffffff',tagBg:'#e7f1fe',tagTx:'#1a6cc0'}
+  },
+  {
+    id:'E', name:'藕荷紫', en:'Lilac', rec:false,
+    desc:'浅紫灰，偏年轻化。视觉上最有区分度，容易记住；风险是「紫色 + 价格」容易显得像虚拟币/会员营销，正式感稍弱。',
+    v:{pg:'#f7f5fc',h1:'#f4f0fd',h2:'#e9e3fa',ink:'#2a2145',sub:'#8578a8',faint:'#b3a8cd',
+       line:'rgba(42,33,69,.10)',srch:'rgba(255,255,255,.86)',srchBd:'#ddd3f2',
+       stat:'rgba(255,255,255,.6)',card:'#ffffff',acc:'#7a5af8',onBg:'#2a2145',onTx:'#ffffff',tagBg:'#f0ecfe',tagTx:'#5a3cd0'}
+  },
+  {
+    id:'F', name:'樱雪粉', en:'Blush', rec:false,
+    desc:'浅粉调。最柔和、最「生活方式」，适合面向女性用户的品类；作为通用发卡店会偏软，商务感最弱。',
+    v:{pg:'#fdf6f7',h1:'#fdf1f3',h2:'#fbe3e8',ink:'#3d222a',sub:'#a67a88',faint:'#cba6b1',
+       line:'rgba(61,34,42,.10)',srch:'rgba(255,255,255,.86)',srchBd:'#f2d3db',
+       stat:'rgba(255,255,255,.6)',card:'#ffffff',acc:'#e04f77',onBg:'#3d222a',onTx:'#ffffff',tagBg:'#fdebf0',tagTx:'#c23f60'}
+  }
+];
+
+function styleAttr(p){
+  const v = p.v;
+  return [
+    '--pg:'+v.pg,'--h1:'+v.h1,'--h2:'+v.h2,'--ink:'+v.ink,'--sub:'+v.sub,'--faint:'+v.faint,
+    '--line:'+v.line,'--srch:'+v.srch,'--srchBd:'+v.srchBd,'--stat:'+v.stat,
+    '--card:'+v.card,'--acc:'+v.acc,'--onBg:'+v.onBg,'--onTx:'+v.onTx,
+    '--tagBg:'+v.tagBg,'--tagTx:'+v.tagTx
+  ].join(';');
+}
+
+function statusbar(){
+  return '<div class="sbar"><span class="tm">9:41</span>'
+    + '<span class="caps"><span class="dots"><i></i><i></i><i></i></span>'
+    + '<span class="capdiv"></span><span class="capring"></span></span></div>';
+}
+
+function tabbar(active){
+  const items = [
+    ['home','首页'],['grid','分类'],['list','订单'],['user','我的']
+  ];
+  return '<div class="tabbar">' + items.map(function(it){
+    const on = it[1] === active ? ' on' : '';
+    return '<div class="tb'+on+'">'+ICON[it[0]]+'<span>'+it[1]+'</span></div>';
+  }).join('') + '</div>';
+}
+
+function pageIndex(p){
+  return '<div class="phone" data-page="index">'
+    + '<div class="screen" style="'+styleAttr(p)+'">'
+    +   statusbar()
+    +   '<div class="hero">'
+    +     '<div class="brand">自动发卡小店</div>'
+    +     '<div class="slogan">付款即刻自动发货 · 全程自助</div>'
+    +     '<div class="srch"><i class="sico"></i><span>搜索商品名称 / 关键词</span></div>'
+    +     '<div class="stats">'
+    +       '<div class="st"><b>10</b><span>在售商品</span></div><div class="vline"></div>'
+    +       '<div class="st"><b>4</b><span>商品分类</span></div><div class="vline"></div>'
+    +       '<div class="st"><b>7×24</b><span>自动发货</span></div>'
+    +     '</div>'
+    +   '</div>'
+    +   '<div class="chips">'
+    +     '<span class="chip on">全部</span><span class="chip">会员卡</span>'
+    +     '<span class="chip">游戏点卡</span><span class="chip">软件授权</span>'
+    +   '</div>'
+    +   '<div class="grid">'
+    +     '<div class="gcard"><div class="gcover"><span class="ginit">V</span><span class="badge">推荐</span></div>'
+    +       '<div class="gb"><div class="gn">视频会员月卡 · 自动发货</div>'
+    +         '<div class="gtags"><span class="tag">秒发</span><span class="tag">7天质保</span></div>'
+    +         '<div class="gfoot"><span class="price"><i>¥</i>12.80</span><span class="gsold">已售 328</span></div>'
+    +       '</div></div>'
+    +     '<div class="gcard"><div class="gcover"><span class="ginit">G</span><span class="badge green">限时</span></div>'
+    +       '<div class="gb"><div class="gn">游戏点卡 100 元面值</div>'
+    +         '<div class="gtags"><span class="tag">秒发</span></div>'
+    +         '<div class="gfoot"><span class="price"><i>¥</i>96.00</span><span class="gsold">已售 1.2万</span></div>'
+    +       '</div></div>'
+    +   '</div>'
+    +   '<div class="more">已经到底了</div>'
+    +   tabbar('首页')
+    + '</div>'
+    + '<div class="cap">首页</div></div>';
+}
+
+function pageMine(p){
+  return '<div class="phone" data-page="mine">'
+    + '<div class="screen" style="'+styleAttr(p)+'">'
+    +   statusbar()
+    +   '<div class="hero mine">'
+    +     '<div class="user">'
+    +       '<div class="avatar">我</div>'
+    +       '<div class="flex1"><div class="uname">微信用户</div>'
+    +         '<div class="ustatus">已登录 · openid 已绑定</div></div>'
+    +       '<div class="login-btn">刷新</div>'
+    +     '</div>'
+    +     '<div class="prow"><span class="pl">手机号</span><span class="pv">138****8000</span><span class="pa">›</span></div>'
+    +   '</div>'
+    +   '<div class="stats-card">'
+    +     '<div class="stat"><b>6</b><span>全部订单</span></div>'
+    +     '<div class="stat"><b class="amber">1</b><span>待支付</span></div>'
+    +     '<div class="stat"><b class="green">5</b><span>已支付</span></div>'
+    +     '<div class="stat"><b>4</b><span>商品分类</span></div>'
+    +   '</div>'
+    +   '<div class="menu">'
+    +     '<div class="mi">'+ICON.order+'<span class="t">我的订单</span><span class="a">›</span></div>'
+    +     '<div class="mi">'+ICON.find+'<span class="t">手机号 / 订单号查单</span><span class="a">›</span></div>'
+    +     '<div class="mi">'+ICON.help+'<span class="t">帮助与客服</span><span class="a">›</span></div>'
+    +     '<div class="mi">'+ICON.info+'<span class="t">关于本店</span><span class="a">›</span></div>'
+    +   '</div>'
+    +   '<div class="logout">退出登录</div>'
+    +   '<div class="foot">自动发卡小店<br>商品与卡密由发卡平台实时提供</div>'
+    +   tabbar('我的')
+    + '</div>'
+    + '<div class="cap">我的</div></div>';
+}
+
+function swatch(label, color){
+  return '<span class="sw"><i style="background:'+color+'"></i>'+label+' '+color+'</span>';
+}
+
+const host = document.getElementById('plans');
+// ?only=C 只渲染指定方案（便于单独截图核对）
+const ONLY = (new URLSearchParams(location.search).get('only') || '').toUpperCase();
+const LIST = ONLY ? PLANS.filter(function(p){ return p.id === ONLY; }) : PLANS;
+host.innerHTML = LIST.map(function(p){
+  return '<section class="plan" id="plan-'+p.id+'" data-id="'+p.id+'">'
+    + '<div class="plan-head">'
+    +   '<div class="ph-l">'
+    +     '<span class="ptag">方案 '+p.id+'</span>'
+    +     '<span class="pname">'+p.name+'<em>'+p.en+'</em></span>'
+    +     (p.rec ? '<span class="rec">推荐</span>' : '')
+    +     '<div class="pdesc">'+p.desc+'</div>'
+    +     '<div class="swatches">'
+    +       swatch('页面底', p.v.pg) + swatch('Hero 顶', p.v.h1) + swatch('Hero 底', p.v.h2)
+    +       swatch('强调', p.v.acc) + swatch('主文字', p.v.ink)
+    +     '</div>'
+    +   '</div>'
+    +   '<button class="pick-btn" data-pick="'+p.id+'">选这个方案</button>'
+    + '</div>'
+    + '<div class="phones">' + pageIndex(p) + pageMine(p) + '</div>'
+    + '</section>';
+}).join('');
+
+// 支持通过 #plan-C 直接定位到某一套方案
+if (location.hash) {
+  const target = document.querySelector(location.hash);
+  if (target) setTimeout(function(){ target.scrollIntoView({block:'start'}); }, 60);
+}
+
+document.getElementById('seg').addEventListener('click', function(e){
+  const b = e.target.closest('button');
+  if(!b) return;
+  this.querySelectorAll('button').forEach(function(x){ x.classList.remove('on'); });
+  b.classList.add('on');
+  document.body.classList.remove('only-index','only-mine');
+  if(b.dataset.view === 'index') document.body.classList.add('only-index');
+  if(b.dataset.view === 'mine') document.body.classList.add('only-mine');
+});
+
+host.addEventListener('click', function(e){
+  const b = e.target.closest('[data-pick]');
+  if(!b) return;
+  const id = b.dataset.pick;
+  const plan = PLANS.find(function(x){ return x.id === id; });
+  host.querySelectorAll('.plan').forEach(function(s){
+    s.classList.toggle('picked-plan', s.dataset.id === id);
+  });
+  host.querySelectorAll('.pick-btn').forEach(function(s){
+    s.textContent = s.dataset.pick === id ? '已选择 ✓' : '选这个方案';
+  });
+  const el = document.getElementById('picked');
+  el.textContent = '已选：方案 ' + plan.id + ' · ' + plan.name;
+  el.classList.remove('none');
+});
+</script>
+</body>
+</html>
